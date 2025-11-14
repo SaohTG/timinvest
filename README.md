@@ -210,6 +210,7 @@ L'application sera accessible sur `http://localhost:5847`
 | [`DOCKER-GUIDE.md`](DOCKER-GUIDE.md) | Guide Docker complet |
 | [`START-HERE.md`](START-HERE.md) | Guide de démarrage |
 | [`SYMBOLS-GUIDE.md`](SYMBOLS-GUIDE.md) | **Guide des symboles boursiers** (US, FR, ES, etc.) |
+| [`API-ALTERNATIVES.md`](API-ALTERNATIVES.md) | **Comparatif API boursières** (Twelve Data, Yahoo, etc.) |
 
 ---
 
