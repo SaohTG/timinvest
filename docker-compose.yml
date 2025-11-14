@@ -2,10 +2,10 @@ version: '3.8'
 
 services:
   timinvest:
-    image: timinvest:latest
     build:
       context: .
       dockerfile: Dockerfile
+    image: timinvest:latest
     container_name: timinvest
     restart: unless-stopped
     ports:

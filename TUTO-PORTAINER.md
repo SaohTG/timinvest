@@ -34,23 +34,9 @@ Puis ouvrez **http://localhost:9000** et créez votre compte admin.
 
 ## 🎯 Méthode Rapide : En 4 étapes
 
-### ✨ Étape 1 : Construire l'image Docker
+### ✨ Étape 1 : Préparer le déploiement
 
-Ouvrez un terminal dans le dossier du projet et lancez :
-
-**Sur Windows PowerShell :**
-```powershell
-docker build -t timinvest:latest .
-```
-
-**Sur Linux/Mac :**
-```bash
-docker build -t timinvest:latest .
-```
-
-⏱️ Patientez 2-3 minutes le temps de la construction...
-
-✅ **Image construite !** Vous devriez voir : `Successfully tagged timinvest:latest`
+**Bonne nouvelle !** Avec la méthode GitHub, vous n'avez **pas besoin de construire l'image** manuellement. Portainer va le faire automatiquement depuis le repository ! 🎉
 
 ---
 

@@ -18,7 +18,8 @@ Ce guide montre comment déployer TimInvest sur Portainer **directement depuis G
 
 1. Docker installé
 2. Portainer installé et accessible
-3. Image Docker construite : `docker build -t timinvest:latest .`
+
+**C'est tout !** Portainer va construire l'image automatiquement depuis GitHub 🎉
 
 ---
 
@@ -47,9 +48,16 @@ Ouvrez votre navigateur et allez sur :
 
 4. **Cliquez sur "Deploy the stack"**
 
-### 3️⃣ Accéder à l'application
+### 3️⃣ Attendre la construction
 
-Attendez 30 secondes, puis ouvrez : **http://localhost:8547**
+⏱️ **Première fois :** Portainer va construire l'image depuis le Dockerfile du repo. Cela prend 2-3 minutes.
+
+Vous pouvez suivre la progression dans les logs :
+- **Stacks** → **timinvest** → **Logs**
+
+### 4️⃣ Accéder à l'application
+
+Une fois la construction terminée, ouvrez : **http://localhost:8547**
 
 ---
 
@@ -290,7 +298,6 @@ Utilisez des fichiers différents :
 ## ✅ Checklist de Déploiement
 
 - [ ] Docker et Portainer installés
-- [ ] Image construite localement (`docker build -t timinvest:latest .`)
 - [ ] Stack créée dans Portainer avec méthode "Repository"
 - [ ] URL GitHub configurée : `https://github.com/SaohTG/timinvest`
 - [ ] Reference configurée : `refs/heads/main`

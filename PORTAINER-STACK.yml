@@ -32,6 +32,9 @@ version: '3.8'
 
 services:
   timinvest:
+    build:
+      context: .
+      dockerfile: Dockerfile
     image: timinvest:latest
     container_name: timinvest
     restart: unless-stopped

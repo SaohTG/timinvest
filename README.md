@@ -160,12 +160,7 @@ Remplacez le logo dans `components/Layout.tsx`
 
 **La méthode la plus simple !** Déploiement direct depuis le repository GitHub.
 
-```bash
-# 1. Construire l'image
-docker build -t timinvest:latest .
-```
-
-Puis dans Portainer :
+Dans Portainer :
 - **Stacks** → **Add stack** → Sélectionnez **"Repository"**
 - Repository URL : `https://github.com/SaohTG/timinvest`
 - Reference : `refs/heads/main`

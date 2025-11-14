@@ -1,10 +1,29 @@
 version: '3.8'
 
+# ═══════════════════════════════════════════════════════════════
 # Stack Portainer pour TimInvest
-# Copiez ce fichier dans Portainer > Stacks > Add Stack > Web Editor
+# ═══════════════════════════════════════════════════════════════
+#
+# 🚀 DÉPLOIEMENT DEPUIS GITHUB (MÉTHODE RECOMMANDÉE) :
+#
+# Dans Portainer > Stacks > Add Stack :
+# 1. Sélectionnez "Repository"
+# 2. Repository URL : https://github.com/SaohTG/timinvest
+# 3. Reference : refs/heads/main
+# 4. Compose path : docker-compose.portainer.yml
+# 5. Deploy the stack
+#
+# ✅ L'image sera construite automatiquement depuis le Dockerfile !
+#    Pas besoin de "docker build" manuel.
+#    Première construction : 2-3 minutes
+#
+# ═══════════════════════════════════════════════════════════════
 
 services:
   timinvest:
+    build:
+      context: .
+      dockerfile: Dockerfile
     image: timinvest:latest
     container_name: timinvest
     restart: unless-stopped

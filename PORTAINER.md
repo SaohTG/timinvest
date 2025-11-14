@@ -10,22 +10,9 @@ Ce guide vous explique comment déployer TimInvest sur Portainer de manière sim
 
 ## 🚀 Méthode 1 : Déploiement via Stack Portainer (Recommandé)
 
-### Étape 1 : Construire l'image Docker
+### Étape 1 : Déployer sur Portainer
 
-Depuis votre machine locale (où se trouve le projet) :
-
-```bash
-# Construire l'image Docker
-docker build -t timinvest:latest .
-
-# Optionnel : Tagger pour votre registry privé
-docker tag timinvest:latest votre-registry.com/timinvest:latest
-
-# Optionnel : Pusher vers votre registry
-docker push votre-registry.com/timinvest:latest
-```
-
-### Étape 2 : Déployer sur Portainer
+**Bonne nouvelle !** Avec la méthode GitHub, Portainer construit l'image automatiquement. Plus besoin de la construire manuellement ! 🎉
 
 #### Méthode Recommandée : Import depuis GitHub 🌟
 
@@ -40,6 +27,7 @@ docker push votre-registry.com/timinvest:latest
    - **Authentication :** Laissez vide (repository public)
 6. Modifiez les variables d'environnement si nécessaire (section Environment variables)
 7. Cliquez sur **Deploy the stack**
+8. **Patientez 2-3 minutes** pour la construction de l'image (première fois uniquement)
 
 #### Méthode Alternative : Web Editor
 
@@ -53,7 +41,7 @@ docker push votre-registry.com/timinvest:latest
    - `NEXT_PUBLIC_APP_URL` : L'URL de votre application
 7. Cliquez sur **Deploy the stack**
 
-### Étape 3 : Accéder à l'application
+### Étape 2 : Accéder à l'application
 
 Votre application sera accessible sur : `http://votre-serveur:8547`
 
