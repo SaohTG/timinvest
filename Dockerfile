@@ -5,7 +5,9 @@ WORKDIR /app
 
 # Copier les fichiers package
 COPY package.json package-lock.json* ./
-RUN npm ci
+
+# Installer les dépendances (utilise npm ci si package-lock existe, sinon npm install)
+RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
 
 # Stage 2: Builder
 FROM node:18-alpine AS builder
