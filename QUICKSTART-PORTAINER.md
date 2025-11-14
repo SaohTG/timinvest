@@ -42,11 +42,11 @@ services:
     container_name: timinvest
     restart: unless-stopped
     ports:
-      - "7293:3000"
+      - "8547:3000"
     environment:
       - NODE_ENV=production
       - FINNHUB_API_KEY=d4b96lhr01qrv4ataf3gd4b96lhr01qrv4ataf40
-      - NEXT_PUBLIC_APP_URL=http://localhost:7293
+      - NEXT_PUBLIC_APP_URL=http://localhost:8547
     volumes:
       - timinvest-data:/app/data
     networks:
@@ -65,7 +65,7 @@ networks:
 
 ## ✅ C'est Prêt !
 
-Ouvrez votre navigateur sur : **http://localhost:7293** (ou l'IP de votre serveur:7293)
+Ouvrez votre navigateur sur : **http://localhost:8547** (ou l'IP de votre serveur:8547)
 
 ## 🔧 Commandes Utiles
 

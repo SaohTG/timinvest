@@ -15,7 +15,7 @@ chmod +x deploy.sh
 ./deploy.sh
 ```
 
-Puis ouvrez : **http://localhost:7293** 🎉
+Puis ouvrez : **http://localhost:8547** 🎉
 
 ---
 
@@ -115,8 +115,9 @@ docker-compose up -d --build
 
 Après déploiement :
 
-- **Local:** http://localhost:7293
-- **Serveur:** http://IP-DU-SERVEUR:7293
+- **Dev Local:** http://localhost:5847
+- **Docker:** http://localhost:8547
+- **Serveur:** http://IP-DU-SERVEUR:8547
 
 ---
 
@@ -158,7 +159,7 @@ docker build --no-cache -t timinvest:latest .
 Modifiez dans `docker-compose.yml` :
 ```yaml
 ports:
-  - "8080:3000"  # Utilisera le port 8080
+  - "9999:3000"  # Utilisera le port 9999
 ```
 
 ### Vérifier que Docker fonctionne
@@ -175,7 +176,7 @@ docker ps
 - [ ] Docker installé et lancé
 - [ ] Image construite (`docker build -t timinvest:latest .`)
 - [ ] Conteneur lancé (`docker-compose up -d` ou Portainer)
-- [ ] Application accessible sur http://localhost:7293
+- [ ] Application accessible sur http://localhost:8547 (Docker) ou http://localhost:5847 (Dev)
 - [ ] Ajout d'une action de test dans Portfolio
 - [ ] Vérification des prix en temps réel sur Dashboard
 
