@@ -209,6 +209,7 @@ L'application sera accessible sur `http://localhost:5847`
 | [`PORTAINER.md`](PORTAINER.md) | Documentation Portainer détaillée |
 | [`DOCKER-GUIDE.md`](DOCKER-GUIDE.md) | Guide Docker complet |
 | [`START-HERE.md`](START-HERE.md) | Guide de démarrage |
+| [`SYMBOLS-GUIDE.md`](SYMBOLS-GUIDE.md) | **Guide des symboles boursiers** (US, FR, ES, etc.) |
 
 ---
 

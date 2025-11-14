@@ -40,8 +40,9 @@ async function getStockProfile(symbol: string): Promise<{ name: string; currency
     console.error(`Error fetching profile for ${symbol}:`, error);
   }
   
-  // Fallback pour les actions françaises
-  const frenchStocks: Record<string, { name: string; currency: string }> = {
+  // Fallback pour les actions européennes
+  const europeanStocks: Record<string, { name: string; currency: string }> = {
+    // French stocks
     'MC.PA': { name: 'LVMH Moët Hennessy', currency: 'EUR' },
     'OR.PA': { name: "L'Oréal", currency: 'EUR' },
     'SAN.PA': { name: 'Sanofi', currency: 'EUR' },
@@ -49,12 +50,18 @@ async function getStockProfile(symbol: string): Promise<{ name: string; currency
     'BNP.PA': { name: 'BNP Paribas', currency: 'EUR' },
     'AIR.PA': { name: 'Airbus', currency: 'EUR' },
     'SU.PA': { name: 'Schneider Electric', currency: 'EUR' },
+    // Spanish stocks
+    'SAN.MC': { name: 'Banco Santander', currency: 'EUR' },
+    'BBVA.MC': { name: 'BBVA', currency: 'EUR' },
+    'TEF.MC': { name: 'Telefónica', currency: 'EUR' },
+    'ITX.MC': { name: 'Inditex', currency: 'EUR' },
+    'IBE.MC': { name: 'Iberdrola', currency: 'EUR' },
   };
   
-  return frenchStocks[symbol] || { name: symbol, currency: 'USD', marketCap: 0 };
+  return europeanStocks[symbol] || { name: symbol, currency: 'USD', marketCap: 0 };
 }
 
-export async function getStockQuote(symbol: string): Promise<StockData> {
+export async function getStockQuote(symbol: string): Promise<StockData | null> {
   // Vérifier le cache
   const cached = cache.get(symbol);
   if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
@@ -78,7 +85,7 @@ export async function getStockQuote(symbol: string): Promise<StockData> {
     // Vérifier si on a reçu des données valides
     if (!quote || quote.c === 0 || quote.c === null) {
       console.warn(`No valid price data for ${symbol}, quote:`, quote);
-      throw new Error(`No data available for ${symbol}`);
+      return null; // Retourner null au lieu de throw
     }
     
     // Récupérer le profil de l'entreprise
@@ -103,7 +110,8 @@ export async function getStockQuote(symbol: string): Promise<StockData> {
     return data;
   } catch (error) {
     console.error(`Error fetching stock data for ${symbol}:`, error);
-    throw new Error(`Unable to fetch data for ${symbol}`);
+    // Retourner null au lieu de throw pour ne pas faire planter toute l'app
+    return null;
   }
 }
 
@@ -116,15 +124,26 @@ export async function getMultipleStockQuotes(symbols: string[]): Promise<Record<
   const batchSize = 5;
   for (let i = 0; i < symbols.length; i += batchSize) {
     const batch = symbols.slice(i, i + batchSize);
-    await Promise.all(
+    const batchResults = await Promise.all(
       batch.map(async (symbol) => {
         try {
-          results[symbol] = await getStockQuote(symbol);
+          const data = await getStockQuote(symbol);
+          return { symbol, data };
         } catch (error) {
           console.error(`Failed to fetch ${symbol}:`, error);
+          return { symbol, data: null };
         }
       })
     );
+    
+    // Ajouter les résultats valides uniquement
+    batchResults.forEach(({ symbol, data }) => {
+      if (data) {
+        results[symbol] = data;
+      } else {
+        console.warn(`Skipping ${symbol} - no valid data received`);
+      }
+    });
     
     // Pause de 200ms entre les batches pour respecter le rate limit
     if (i + batchSize < symbols.length) {
@@ -202,6 +221,14 @@ export async function searchStocks(query: string): Promise<Array<{ symbol: strin
     { symbol: 'ML.PA', name: 'Michelin' },
     { symbol: 'VIE.PA', name: 'Veolia Environnement' },
     { symbol: 'DEC.PA', name: 'Legrand' },
+    
+    // Spanish Stocks (BME Madrid) - .MC
+    { symbol: 'SAN.MC', name: 'Banco Santander' },
+    { symbol: 'BBVA.MC', name: 'BBVA' },
+    { symbol: 'TEF.MC', name: 'Telefónica' },
+    { symbol: 'ITX.MC', name: 'Inditex' },
+    { symbol: 'IBE.MC', name: 'Iberdrola' },
+    { symbol: 'REP.MC', name: 'Repsol' },
   ];
 
   try {
