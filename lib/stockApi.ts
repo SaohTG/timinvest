@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { StockData } from '@/types';
-import { isValidISIN, isinToSymbol, getCountryFromISIN } from './isinMapping';
+import { isValidISIN, isinToSymbol, getCountryFromISIN, cleanISIN } from './isinMapping';
 
 // API Keys
 const TWELVE_DATA_API_KEY = process.env.TWELVE_DATA_API_KEY || 'c5faa07f2c8e4acab081b77d52492dde';
@@ -230,28 +230,34 @@ export async function searchStocks(query: string): Promise<Array<{ symbol: strin
   
   // Vérifier si la recherche est un code ISIN
   if (isValidISIN(trimmedQuery)) {
-    console.log(`ISIN detected: ${trimmedQuery}`);
+    console.log(`[ISIN] Detected: ${trimmedQuery}`);
     const symbol = isinToSymbol(trimmedQuery);
     
     if (symbol) {
       const country = getCountryFromISIN(trimmedQuery);
-      console.log(`ISIN ${trimmedQuery} → Symbol ${symbol} (${country})`);
+      console.log(`[ISIN] ${trimmedQuery} → ${symbol} (${country})`);
       
-      // Essayer de récupérer le nom via l'API
+      // Essayer de récupérer le nom complet via l'API
       try {
         const stockData = await getStockQuote(symbol);
         if (stockData) {
-          return [{ symbol, name: `${stockData.name} (ISIN: ${trimmedQuery})` }];
+          console.log(`[ISIN] Found: ${stockData.name}`);
+          return [{ symbol, name: stockData.name }];
         }
       } catch (error) {
-        console.error(`Error fetching data for ISIN ${trimmedQuery}:`, error);
+        console.error(`[ISIN] Error fetching data:`, error);
       }
       
-      // Fallback : retourner juste le symbole
-      return [{ symbol, name: `${symbol} (ISIN: ${trimmedQuery})` }];
+      // Fallback : retourner avec le symbole trouvé
+      return [{ symbol, name: `${symbol}` }];
     } else {
-      console.warn(`ISIN ${trimmedQuery} not found in database`);
-      return [];
+      console.warn(`[ISIN] ${trimmedQuery} not found in database. Available: ${Object.keys(require('./isinMapping').ISIN_TO_SYMBOL).length} ISIN codes.`);
+      
+      // Suggérer les ISIN similaires
+      return [{
+        symbol: '',
+        name: `❌ ISIN ${trimmedQuery} non trouvé. Vérifiez le code ISIN.`
+      }];
     }
   }
   
@@ -325,6 +331,7 @@ export async function searchStocks(query: string): Promise<Array<{ symbol: strin
     { symbol: 'SAF.PA', name: 'Safran' },
     { symbol: 'DSY.PA', name: 'Dassault Systèmes' },
     { symbol: 'EL.PA', name: 'EssilorLuxottica' },
+    { symbol: 'EL.PA', name: 'Essilor' },
     { symbol: 'ORA.PA', name: 'Orange' },
     { symbol: 'EN.PA', name: 'Bouygues' },
     { symbol: 'SGO.PA', name: 'Saint-Gobain' },

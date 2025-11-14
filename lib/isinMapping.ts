@@ -42,6 +42,7 @@ export const ISIN_TO_SYMBOL: Record<string, string> = {
   'FR0000073272': 'SAF.PA',    // Safran
   'FR0014003TT8': 'DSY.PA',    // Dassault Systèmes
   'FR0000121667': 'EL.PA',     // EssilorLuxottica
+  'FR0000120669': 'EL.PA',     // EssilorLuxottica (ancien ISIN Essilor)
   'FR0000133308': 'ORA.PA',    // Orange
   'FR0000120503': 'EN.PA',     // Bouygues
   'FR0000125007': 'SGO.PA',    // Saint-Gobain
@@ -85,17 +86,25 @@ export const ISIN_TO_SYMBOL: Record<string, string> = {
   'CH0012005267': 'NOVN.SW',   // Novartis
 };
 
+// Fonction pour nettoyer un code ISIN (enlever espaces, tirets, etc.)
+export function cleanISIN(code: string): string {
+  return code.replace(/[\s\-_]/g, '').toUpperCase().trim();
+}
+
 // Fonction pour vérifier si une chaîne est un ISIN valide
 export function isValidISIN(code: string): boolean {
+  // Nettoyer le code d'abord
+  const cleaned = cleanISIN(code);
+  
   // Format ISIN : 2 lettres + 10 caractères alphanumériques
   const isinRegex = /^[A-Z]{2}[A-Z0-9]{10}$/;
-  return isinRegex.test(code.toUpperCase());
+  return isinRegex.test(cleaned);
 }
 
 // Fonction pour convertir un ISIN en symbole
 export function isinToSymbol(isin: string): string | null {
-  const upperISIN = isin.toUpperCase().trim();
-  return ISIN_TO_SYMBOL[upperISIN] || null;
+  const cleanedISIN = cleanISIN(isin);
+  return ISIN_TO_SYMBOL[cleanedISIN] || null;
 }
 
 // Fonction pour obtenir le pays depuis l'ISIN
