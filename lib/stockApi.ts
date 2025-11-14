@@ -2,9 +2,19 @@ import axios from 'axios';
 import { StockData } from '@/types';
 import { isValidISIN, isinToSymbol, getCountryFromISIN } from './isinMapping';
 
+// API Keys
+const TWELVE_DATA_API_KEY = process.env.TWELVE_DATA_API_KEY || 'c5faa07f2c8e4acab081b77d52492dde';
 const FINNHUB_API_KEY = process.env.FINNHUB_API_KEY || 'd4b96lhr01qrv4ataf3gd4b96lhr01qrv4ataf40';
+
+// Cache configuration
 const CACHE_DURATION = 60000; // 1 minute
 const cache = new Map<string, { data: StockData; timestamp: number }>();
+
+// API provider tracking
+let apiStats = {
+  twelveData: { success: 0, errors: 0 },
+  finnhub: { success: 0, errors: 0 },
+};
 
 interface FinnhubQuote {
   c: number; // Current price
@@ -62,18 +72,51 @@ async function getStockProfile(symbol: string): Promise<{ name: string; currency
   return europeanStocks[symbol] || { name: symbol, currency: 'USD', marketCap: 0 };
 }
 
-export async function getStockQuote(symbol: string): Promise<StockData | null> {
-  // Vérifier le cache
-  const cached = cache.get(symbol);
-  if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
-    console.log(`Cache hit for ${symbol}: ${cached.data.price}`);
-    return cached.data;
-  }
-
+// Fonction pour récupérer le prix depuis Twelve Data (API principale)
+async function fetchFromTwelveData(symbol: string): Promise<StockData | null> {
   try {
-    console.log(`Fetching quote for ${symbol} from Finnhub API...`);
+    console.log(`[Twelve Data] Fetching ${symbol}...`);
     
-    // Appel à l'API Finnhub pour le prix
+    const response = await axios.get(
+      `https://api.twelvedata.com/quote?symbol=${symbol}&apikey=${TWELVE_DATA_API_KEY}`,
+      { timeout: 5000 }
+    );
+    
+    const data = response.data;
+    
+    // Vérifier s'il y a une erreur
+    if (data.status === 'error' || !data.close) {
+      console.warn(`[Twelve Data] No data for ${symbol}:`, data.message || 'No close price');
+      return null;
+    }
+    
+    const stockData: StockData = {
+      symbol: data.symbol || symbol.toUpperCase(),
+      name: data.name || symbol,
+      price: parseFloat(data.close),
+      change: parseFloat(data.change) || 0,
+      changePercent: parseFloat(data.percent_change) || 0,
+      volume: parseInt(data.volume) || 0,
+      marketCap: 0,
+      currency: data.currency || 'USD',
+    };
+    
+    console.log(`[Twelve Data] ✓ ${symbol}: ${stockData.price} ${stockData.currency}`);
+    apiStats.twelveData.success++;
+    
+    return stockData;
+  } catch (error: any) {
+    console.error(`[Twelve Data] ✗ Error for ${symbol}:`, error.message);
+    apiStats.twelveData.errors++;
+    return null;
+  }
+}
+
+// Fonction pour récupérer le prix depuis Finnhub (API de fallback)
+async function fetchFromFinnhub(symbol: string): Promise<StockData | null> {
+  try {
+    console.log(`[Finnhub] Fetching ${symbol}...`);
+    
     const quoteResponse = await axios.get<FinnhubQuote>(
       `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${FINNHUB_API_KEY}`,
       { timeout: 5000 }
@@ -81,39 +124,64 @@ export async function getStockQuote(symbol: string): Promise<StockData | null> {
     
     const quote = quoteResponse.data;
     
-    console.log(`Quote received for ${symbol}:`, JSON.stringify(quote));
-    
-    // Vérifier si on a reçu des données valides
     if (!quote || quote.c === 0 || quote.c === null) {
-      console.warn(`No valid price data for ${symbol}, quote:`, quote);
-      return null; // Retourner null au lieu de throw
+      console.warn(`[Finnhub] No valid price data for ${symbol}`);
+      return null;
     }
     
-    // Récupérer le profil de l'entreprise
     const profile = await getStockProfile(symbol);
     
-    const data: StockData = {
+    const stockData: StockData = {
       symbol: symbol.toUpperCase(),
       name: profile.name,
       price: quote.c,
       change: quote.d,
       changePercent: quote.dp,
-      volume: 0, // Finnhub ne fournit pas le volume dans l'endpoint quote gratuit
+      volume: 0,
       marketCap: profile.marketCap,
       currency: profile.currency,
     };
     
-    console.log(`Stock data for ${symbol}: ${data.price} ${data.currency}`);
+    console.log(`[Finnhub] ✓ ${symbol}: ${stockData.price} ${stockData.currency}`);
+    apiStats.finnhub.success++;
     
-    // Mettre en cache
-    cache.set(symbol, { data, timestamp: Date.now() });
-    
-    return data;
-  } catch (error) {
-    console.error(`Error fetching stock data for ${symbol}:`, error);
-    // Retourner null au lieu de throw pour ne pas faire planter toute l'app
+    return stockData;
+  } catch (error: any) {
+    console.error(`[Finnhub] ✗ Error for ${symbol}:`, error.message);
+    apiStats.finnhub.errors++;
     return null;
   }
+}
+
+// Fonction principale avec système de fallback intelligent
+export async function getStockQuote(symbol: string): Promise<StockData | null> {
+  // Vérifier le cache
+  const cached = cache.get(symbol);
+  if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+    console.log(`[Cache] Hit for ${symbol}: ${cached.data.price}`);
+    return cached.data;
+  }
+
+  // Essayer Twelve Data en priorité (temps réel)
+  let data = await fetchFromTwelveData(symbol);
+  
+  // Si échec, essayer Finnhub en fallback
+  if (!data) {
+    console.log(`[Fallback] Trying Finnhub for ${symbol}...`);
+    data = await fetchFromFinnhub(symbol);
+  }
+  
+  // Si on a des données, les mettre en cache
+  if (data) {
+    cache.set(symbol, { data, timestamp: Date.now() });
+    return data;
+  }
+  
+  // Afficher les stats si échec
+  console.error(`[API] Failed to fetch ${symbol} from all providers`);
+  console.log('[API Stats]', apiStats);
+  
+  return null;
 }
 
 export async function getMultipleStockQuotes(symbols: string[]): Promise<Record<string, StockData>> {
