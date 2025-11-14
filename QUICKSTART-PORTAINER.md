@@ -29,6 +29,18 @@ docker build -t timinvest:latest .
 
 ### Étape 3️⃣ : Créer la Stack
 
+#### Méthode Simple : Depuis GitHub (Recommandé) 🌟
+
+1. **Name** : `timinvest`
+2. **Sélectionnez "Repository"**
+3. **Configurez :**
+   - Repository URL : `https://github.com/SaohTG/timinvest`
+   - Reference : `refs/heads/main`
+   - Compose path : `docker-compose.portainer.yml`
+4. Cliquez sur **Deploy the stack**
+
+#### Méthode Alternative : Web Editor
+
 1. **Name** : `timinvest`
 2. Sélectionnez **Web editor**
 3. Copiez-collez le contenu ci-dessous :

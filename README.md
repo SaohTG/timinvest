@@ -32,7 +32,7 @@ npm install
 npm run dev
 ```
 
-4. Ouvrez votre navigateur à l'adresse [http://localhost:3000](http://localhost:3000)
+4. Ouvrez votre navigateur à l'adresse [http://localhost:5847](http://localhost:5847)
 
 ## 📁 Structure du Projet
 
@@ -156,33 +156,75 @@ Remplacez le logo dans `components/Layout.tsx`
 
 ## 🚀 Déploiement
 
-### Option 1 : Portainer (Docker) - Recommandé ⭐
+### Option 1 : Portainer depuis GitHub - Recommandé ⭐
 
-Déploiement simple avec Docker et Portainer pour une installation en production.
+**La méthode la plus simple !** Déploiement direct depuis le repository GitHub.
 
 ```bash
 # 1. Construire l'image
 docker build -t timinvest:latest .
+```
 
-# 2. Lancer avec Docker Compose
-docker-compose up -d
+Puis dans Portainer :
+- **Stacks** → **Add stack** → Sélectionnez **"Repository"**
+- Repository URL : `https://github.com/SaohTG/timinvest`
+- Reference : `refs/heads/main`
+- Compose path : `docker-compose.portainer.yml`
+- **Deploy the stack**
+
+**Avantages :**
+- ✅ Mise à jour en 1 clic depuis GitHub
+- ✅ Pas de copier-coller de configuration
+- ✅ Configuration versionnée
+
+📖 **Guide détaillé :** [`README-PORTAINER-GITHUB.md`](README-PORTAINER-GITHUB.md)
+
+L'application sera accessible sur `http://localhost:8547`
+
+### Option 2 : Docker Compose (Manuel)
+
+```bash
+# Lancer avec Docker Compose
+docker-compose up -d --build
 
 # Ou utiliser le Makefile
 make install
 ```
 
-**Pour Portainer** : Consultez le fichier `PORTAINER.md` pour les instructions détaillées.
+L'application sera accessible sur `http://localhost:8547`
 
-L'application sera accessible sur `http://localhost:7293`
+### Option 3 : Développement Local
 
-### Option 2 : Vercel
+```bash
+npm install
+npm run dev
+```
+
+L'application sera accessible sur `http://localhost:5847`
+
+---
+
+## 📚 Documentation Complète
+
+| Guide | Description |
+|-------|-------------|
+| [`README-PORTAINER-GITHUB.md`](README-PORTAINER-GITHUB.md) | **Déploiement Portainer depuis GitHub** (recommandé) |
+| [`TUTO-PORTAINER.md`](TUTO-PORTAINER.md) | Tutoriel complet Portainer |
+| [`QUICKSTART-PORTAINER.md`](QUICKSTART-PORTAINER.md) | Guide rapide Portainer |
+| [`PORTAINER.md`](PORTAINER.md) | Documentation Portainer détaillée |
+| [`DOCKER-GUIDE.md`](DOCKER-GUIDE.md) | Guide Docker complet |
+| [`START-HERE.md`](START-HERE.md) | Guide de démarrage |
+
+---
+
+### Option 4 : Vercel
 
 ```bash
 npm run build
 # Puis déployez sur Vercel via leur interface ou CLI
 ```
 
-### Option 3 : Autres Plateformes
+### Option 5 : Autres Plateformes
 
 L'application peut être déployée sur :
 - Netlify

@@ -27,6 +27,22 @@ docker push votre-registry.com/timinvest:latest
 
 ### Étape 2 : Déployer sur Portainer
 
+#### Méthode Recommandée : Import depuis GitHub 🌟
+
+1. **Ouvrez Portainer** dans votre navigateur
+2. Allez dans **Stacks** → **Add stack**
+3. Donnez un nom : `timinvest`
+4. Sélectionnez **Repository**
+5. Configurez le repository :
+   - **Repository URL :** `https://github.com/SaohTG/timinvest`
+   - **Repository reference :** `refs/heads/main`
+   - **Compose path :** `docker-compose.portainer.yml`
+   - **Authentication :** Laissez vide (repository public)
+6. Modifiez les variables d'environnement si nécessaire (section Environment variables)
+7. Cliquez sur **Deploy the stack**
+
+#### Méthode Alternative : Web Editor
+
 1. **Ouvrez Portainer** dans votre navigateur
 2. Allez dans **Stacks** → **Add stack**
 3. Donnez un nom : `timinvest`

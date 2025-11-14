@@ -96,7 +96,9 @@ make install
 docker-compose up -d --build
 ```
 
-### 4. Pour Portainer
+### 4. Pour Portainer ⭐
+
+**Méthode Simple (Recommandée) :**
 
 1. Construisez l'image :
    ```bash
@@ -105,9 +107,14 @@ docker-compose up -d --build
 
 2. Ouvrez Portainer → Stacks → Add Stack
 
-3. Copiez le contenu de `docker-compose.portainer.yml`
+3. Sélectionnez "Repository" et configurez :
+   - Repository URL : `https://github.com/SaohTG/timinvest`
+   - Reference : `refs/heads/main`
+   - Compose path : `docker-compose.portainer.yml`
 
 4. Cliquez sur "Deploy the stack"
+
+**Alternative :** Utilisez "Web editor" et copiez `docker-compose.portainer.yml`
 
 ---
 

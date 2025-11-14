@@ -69,6 +69,21 @@ Dans Portainer :
 1. **Cliquez sur "Stacks"** dans le menu de gauche
 2. **Cliquez sur "+ Add stack"** en haut à droite
 3. **Nom de la stack :** `timinvest`
+4. **Sélectionnez "Repository"**
+5. **Configurez le repository :**
+   - **Repository URL :** `https://github.com/SaohTG/timinvest`
+   - **Repository reference :** `refs/heads/main`
+   - **Compose path :** `docker-compose.portainer.yml`
+   - **Authentication :** Laissez vide (repository public)
+6. **Cliquez sur "Deploy the stack"**
+
+#### 📋 Alternative : Méthode Web Editor (Manuelle)
+
+Si vous préférez modifier la configuration avant de déployer :
+
+1. **Cliquez sur "Stacks"** dans le menu de gauche
+2. **Cliquez sur "+ Add stack"** en haut à droite
+3. **Nom de la stack :** `timinvest`
 4. **Sélectionnez "Web editor"**
 5. **Copiez-collez ce code** dans l'éditeur :
 
@@ -110,6 +125,8 @@ networks:
 ```
 
 6. **Cliquez sur "Deploy the stack"** en bas
+
+> 💡 **Astuce :** La méthode Repository est recommandée car elle permet de mettre à jour facilement la stack en un clic depuis GitHub !
 
 ---
 
@@ -240,23 +257,38 @@ docker run --rm \
 
 Quand une nouvelle version est disponible :
 
-### 1. Reconstruire l'image
+### Méthode 1 : Mise à jour depuis GitHub (Si vous avez utilisé "Repository")
 
-```bash
-# Récupérer les dernières modifications
-git pull
-
-# Reconstruire l'image
-docker build -t timinvest:latest .
-```
-
-### 2. Dans Portainer
+**Super simple !** 🚀
 
 1. Allez dans **Stacks** → **timinvest**
-2. Cliquez sur **Editor**
-3. Ne changez rien, cliquez juste sur **Update the stack**
-4. Cochez **Re-pull image and redeploy**
-5. Cliquez sur **Update**
+2. Cliquez sur **Pull and redeploy**
+3. Portainer va automatiquement :
+   - Récupérer la dernière version depuis GitHub
+   - Reconstruire l'image si nécessaire
+   - Redéployer l'application
+
+C'est tout ! L'application est à jour en un clic ! 🎉
+
+### Méthode 2 : Mise à jour manuelle
+
+Si vous avez utilisé la méthode "Web editor" :
+
+1. **Reconstruire l'image localement :**
+   ```bash
+   # Récupérer les dernières modifications
+   git pull
+   
+   # Reconstruire l'image
+   docker build -t timinvest:latest .
+   ```
+
+2. **Dans Portainer :**
+   - Allez dans **Stacks** → **timinvest**
+   - Cliquez sur **Editor**
+   - Ne changez rien, cliquez juste sur **Update the stack**
+   - Cochez **Re-pull image and redeploy**
+   - Cliquez sur **Update**
 
 L'application va redémarrer avec la nouvelle version ! 🎉
 
