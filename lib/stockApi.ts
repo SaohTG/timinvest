@@ -273,6 +273,12 @@ export async function searchStocks(query: string): Promise<Array<{ symbol: strin
     { symbol: 'ORCL', name: 'Oracle Corporation' },
     { symbol: 'ADBE', name: 'Adobe Inc.' },
     
+    // US Stocks - Energy & Oil
+    { symbol: 'XOM', name: 'ExxonMobil Corporation (Esso)' },
+    { symbol: 'CVX', name: 'Chevron Corporation' },
+    { symbol: 'COP', name: 'ConocoPhillips' },
+    { symbol: 'SLB', name: 'Schlumberger' },
+    
     // US Stocks - Finance
     { symbol: 'JPM', name: 'JPMorgan Chase & Co.' },
     { symbol: 'BAC', name: 'Bank of America Corp' },
@@ -282,8 +288,9 @@ export async function searchStocks(query: string): Promise<Array<{ symbol: strin
     { symbol: 'V', name: 'Visa Inc.' },
     { symbol: 'MA', name: 'Mastercard Inc.' },
     { symbol: 'AXP', name: 'American Express' },
+    { symbol: 'C', name: 'Citigroup Inc.' },
     
-    // US Stocks - Consumer
+    // US Stocks - Consumer & Retail
     { symbol: 'WMT', name: 'Walmart Inc.' },
     { symbol: 'HD', name: 'Home Depot Inc.' },
     { symbol: 'NKE', name: 'Nike Inc.' },
@@ -292,6 +299,15 @@ export async function searchStocks(query: string): Promise<Array<{ symbol: strin
     { symbol: 'DIS', name: 'Walt Disney Company' },
     { symbol: 'KO', name: 'Coca-Cola Company' },
     { symbol: 'PEP', name: 'PepsiCo Inc.' },
+    { symbol: 'COST', name: 'Costco Wholesale' },
+    { symbol: 'TGT', name: 'Target Corporation' },
+    
+    // US Stocks - Healthcare & Pharma
+    { symbol: 'JNJ', name: 'Johnson & Johnson' },
+    { symbol: 'UNH', name: 'UnitedHealth Group' },
+    { symbol: 'PFE', name: 'Pfizer Inc.' },
+    { symbol: 'ABBV', name: 'AbbVie Inc.' },
+    { symbol: 'MRK', name: 'Merck & Co.' },
     
     // French Stocks (Euronext Paris) - CAC 40
     { symbol: 'MC.PA', name: 'LVMH Moët Hennessy Louis Vuitton' },
@@ -329,6 +345,9 @@ export async function searchStocks(query: string): Promise<Array<{ symbol: strin
     { symbol: 'REP.MC', name: 'Repsol' },
   ];
 
+  // Symboles invalides connus à exclure des résultats
+  const INVALID_SYMBOLS = ['ES.PA', 'ES.MC', 'FR.PA', 'US.PA', 'DE.PA', 'IT.PA', 'GB.PA'];
+  
   try {
     // Appel à l'API Finnhub pour la recherche
     const response = await axios.get(
@@ -337,18 +356,20 @@ export async function searchStocks(query: string): Promise<Array<{ symbol: strin
     
     if (response.data && response.data.result && response.data.result.length > 0) {
       // Combiner résultats API + base locale et dédupliquer
-      const apiResults = response.data.result.map((item: any) => ({
-        symbol: item.symbol,
-        name: item.description || item.symbol,
-      }));
+      const apiResults = response.data.result
+        .filter((item: any) => !INVALID_SYMBOLS.includes(item.symbol)) // Filtrer symboles invalides
+        .map((item: any) => ({
+          symbol: item.symbol,
+          name: item.description || item.symbol,
+        }));
       
       // Fusionner avec la base locale sans doublons
-      const allResults = [...apiResults];
-      const symbols = new Set(apiResults.map((r: any) => r.symbol));
+      const allResults = [...stockDatabase]; // Mettre la base locale en premier
+      const symbols = new Set(stockDatabase.map(s => s.symbol));
       
-      stockDatabase.forEach(stock => {
-        if (!symbols.has(stock.symbol)) {
-          allResults.push(stock);
+      apiResults.forEach((result: any) => {
+        if (!symbols.has(result.symbol)) {
+          allResults.push(result);
         }
       });
       

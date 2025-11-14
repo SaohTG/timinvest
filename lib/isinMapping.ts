@@ -20,6 +20,11 @@ export const ISIN_TO_SYMBOL: Record<string, string> = {
   'US64110L1061': 'NFLX',      // Netflix
   'US2546871060': 'DIS',       // Disney
   'US1912161007': 'KO',        // Coca-Cola
+  'US30231G1022': 'XOM',       // ExxonMobil (Esso)
+  'US1667641005': 'CVX',       // Chevron
+  'US4781601046': 'JNJ',       // Johnson & Johnson
+  'US7170811035': 'PFE',       // Pfizer
+  'US7427181091': 'PG',        // Procter & Gamble
   
   // Actions françaises (Euronext Paris)
   'FR0000121014': 'MC.PA',     // LVMH
