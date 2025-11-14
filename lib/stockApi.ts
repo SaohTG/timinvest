@@ -58,19 +58,26 @@ export async function getStockQuote(symbol: string): Promise<StockData> {
   // Vérifier le cache
   const cached = cache.get(symbol);
   if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+    console.log(`Cache hit for ${symbol}: ${cached.data.price}`);
     return cached.data;
   }
 
   try {
+    console.log(`Fetching quote for ${symbol} from Finnhub API...`);
+    
     // Appel à l'API Finnhub pour le prix
     const quoteResponse = await axios.get<FinnhubQuote>(
-      `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${FINNHUB_API_KEY}`
+      `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${FINNHUB_API_KEY}`,
+      { timeout: 5000 }
     );
     
     const quote = quoteResponse.data;
     
+    console.log(`Quote received for ${symbol}:`, JSON.stringify(quote));
+    
     // Vérifier si on a reçu des données valides
-    if (!quote || quote.c === 0) {
+    if (!quote || quote.c === 0 || quote.c === null) {
+      console.warn(`No valid price data for ${symbol}, quote:`, quote);
       throw new Error(`No data available for ${symbol}`);
     }
     
@@ -88,6 +95,8 @@ export async function getStockQuote(symbol: string): Promise<StockData> {
       currency: profile.currency,
     };
     
+    console.log(`Stock data for ${symbol}: ${data.price} ${data.currency}`);
+    
     // Mettre en cache
     cache.set(symbol, { data, timestamp: Date.now() });
     
@@ -101,15 +110,29 @@ export async function getStockQuote(symbol: string): Promise<StockData> {
 export async function getMultipleStockQuotes(symbols: string[]): Promise<Record<string, StockData>> {
   const results: Record<string, StockData> = {};
   
-  await Promise.all(
-    symbols.map(async (symbol) => {
-      try {
-        results[symbol] = await getStockQuote(symbol);
-      } catch (error) {
-        console.error(`Failed to fetch ${symbol}:`, error);
-      }
-    })
-  );
+  console.log(`Fetching quotes for ${symbols.length} symbols:`, symbols);
+  
+  // Limiter à 5 requêtes en parallèle pour éviter rate limiting
+  const batchSize = 5;
+  for (let i = 0; i < symbols.length; i += batchSize) {
+    const batch = symbols.slice(i, i + batchSize);
+    await Promise.all(
+      batch.map(async (symbol) => {
+        try {
+          results[symbol] = await getStockQuote(symbol);
+        } catch (error) {
+          console.error(`Failed to fetch ${symbol}:`, error);
+        }
+      })
+    );
+    
+    // Pause de 200ms entre les batches pour respecter le rate limit
+    if (i + batchSize < symbols.length) {
+      await new Promise(resolve => setTimeout(resolve, 200));
+    }
+  }
+  
+  console.log(`Successfully fetched ${Object.keys(results).length} out of ${symbols.length} quotes`);
   
   return results;
 }
