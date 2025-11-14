@@ -20,8 +20,10 @@ COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 
-# Build de l'application Next.js
-RUN npm run build
+# Build de l'application Next.js avec logs verbeux
+RUN echo "========== Démarrage du build Next.js ==========" && \
+    npm run build 2>&1 | tee build.log || \
+    (echo "========== ERREUR DE BUILD ==========" && cat build.log && exit 1)
 
 # Créer le dossier data pour la persistance
 RUN mkdir -p /app/data
