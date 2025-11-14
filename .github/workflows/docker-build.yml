@@ -1,0 +1,25 @@
+name: Docker Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Build Docker image
+      run: docker build -t timinvest:latest .
+    
+    - name: Test Docker image
+      run: |
+        docker run -d -p 3000:3000 --name test-timinvest timinvest:latest
+        sleep 20
+        docker ps
+        docker logs test-timinvest
+
