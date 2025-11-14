@@ -97,7 +97,7 @@ Par défaut sur port 3000. Pour changer:
 
 ```yaml
 ports:
-  - "8080:3000"  # Utilisera le port 8080
+  - "8080:3000"  # Utilisera le port 8080 au lieu de 7293
 ```
 
 ### Volumes et Persistance

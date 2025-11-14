@@ -51,7 +51,7 @@ Write-Host "================================" -ForegroundColor Cyan
 Write-Host "🎉 Déploiement terminé !" -ForegroundColor Green
 Write-Host ""
 Write-Host "📱 Application accessible sur: " -NoNewline
-Write-Host "http://localhost:3000" -ForegroundColor Yellow
+Write-Host "http://localhost:7293" -ForegroundColor Yellow
 Write-Host ""
 Write-Host "Commandes utiles:"
 Write-Host "  - Voir les logs:        docker logs -f timinvest"

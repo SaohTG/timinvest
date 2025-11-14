@@ -15,7 +15,7 @@ chmod +x deploy.sh
 ./deploy.sh
 ```
 
-Puis ouvrez : **http://localhost:3000** 🎉
+Puis ouvrez : **http://localhost:7293** 🎉
 
 ---
 
@@ -115,8 +115,8 @@ docker-compose up -d --build
 
 Après déploiement :
 
-- **Local:** http://localhost:3000
-- **Serveur:** http://IP-DU-SERVEUR:3000
+- **Local:** http://localhost:7293
+- **Serveur:** http://IP-DU-SERVEUR:7293
 
 ---
 
@@ -175,7 +175,7 @@ docker ps
 - [ ] Docker installé et lancé
 - [ ] Image construite (`docker build -t timinvest:latest .`)
 - [ ] Conteneur lancé (`docker-compose up -d` ou Portainer)
-- [ ] Application accessible sur http://localhost:3000
+- [ ] Application accessible sur http://localhost:7293
 - [ ] Ajout d'une action de test dans Portfolio
 - [ ] Vérification des prix en temps réel sur Dashboard
 

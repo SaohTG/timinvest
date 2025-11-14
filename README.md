@@ -173,7 +173,7 @@ make install
 
 **Pour Portainer** : Consultez le fichier `PORTAINER.md` pour les instructions détaillées.
 
-L'application sera accessible sur `http://localhost:3000`
+L'application sera accessible sur `http://localhost:7293`
 
 ### Option 2 : Vercel
 

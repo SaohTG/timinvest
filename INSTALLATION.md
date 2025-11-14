@@ -89,21 +89,21 @@ timinvest/
 Après avoir lancé `npm run dev`, vérifiez que :
 
 1. ✅ Le serveur démarre sans erreur
-2. ✅ Vous pouvez accéder à http://localhost:3000
+2. ✅ Vous pouvez accéder à http://localhost:7293
 3. ✅ La page d'accueil s'affiche correctement
 4. ✅ Vous pouvez ajouter une action dans le Portfolio
 
 ## 🐛 Résolution de Problèmes
 
-### Erreur : Port 3000 déjà utilisé
+### Erreur : Port 7293 déjà utilisé
 
 ```bash
 # Windows
-netstat -ano | findstr :3000
+netstat -ano | findstr :7293
 taskkill /PID <PID> /F
 
 # Linux/Mac
-lsof -ti:3000 | xargs kill
+lsof -ti:7293 | xargs kill
 ```
 
 Ou lancez sur un autre port :

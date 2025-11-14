@@ -16,12 +16,12 @@
 #
 # 3. Attendez 30 secondes que l'application démarre
 #
-# 4. Accédez à : http://localhost:3000 (ou l'IP de votre serveur)
+# 4. Accédez à : http://localhost:8547 (ou l'IP de votre serveur)
 #
 # ═══════════════════════════════════════════════════════════════
 # 🔧 CONFIGURATION :
 # 
-# Pour changer le port, modifiez la ligne "3000:3000" ci-dessous
+# Pour changer le port, modifiez la ligne "8547:3000" ci-dessous
 # Exemple pour port 8080 : "8080:3000"
 #
 # Pour votre propre domaine, modifiez NEXT_PUBLIC_APP_URL
@@ -38,7 +38,7 @@ services:
     
     # Port d'accès (modifiez si nécessaire)
     ports:
-      - "3000:3000"
+      - "8547:3000"
     
     # Variables d'environnement
     environment:
@@ -46,7 +46,7 @@ services:
       # Clé API Finnhub (déjà configurée)
       - FINNHUB_API_KEY=d4b96lhr01qrv4ataf3gd4b96lhr01qrv4ataf40
       # URL de votre application
-      - NEXT_PUBLIC_APP_URL=http://localhost:3000
+      - NEXT_PUBLIC_APP_URL=http://localhost:8547
     
     # Volume pour persistance des données
     volumes:

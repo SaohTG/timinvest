@@ -12,7 +12,7 @@ docker build -t timinvest:latest .
 docker-compose up -d
 
 # 3. Ouvrir dans le navigateur
-# http://localhost:3000
+# http://localhost:7293
 ```
 
 **C'EST TOUT ! ✅**
@@ -70,9 +70,9 @@ http://localhost:9000
 
 Attendez 30 secondes puis ouvrez :
 ```
-http://localhost:3000
+http://localhost:7293
 ```
-(ou http://IP-DU-SERVEUR:3000)
+(ou http://IP-DU-SERVEUR:7293)
 
 ---
 
@@ -84,7 +84,7 @@ Dans le fichier de stack, modifiez :
 
 ```yaml
 ports:
-  - "8080:3000"  # Au lieu de "3000:3000"
+  - "8080:3000"  # Au lieu de "7293:3000"
 ```
 
 ### Utiliser Votre Domaine

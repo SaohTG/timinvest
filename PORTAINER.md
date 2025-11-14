@@ -39,7 +39,7 @@ docker push votre-registry.com/timinvest:latest
 
 ### Étape 3 : Accéder à l'application
 
-Votre application sera accessible sur : `http://votre-serveur:3000`
+Votre application sera accessible sur : `http://votre-serveur:7293`
 
 ## 🎯 Méthode 2 : Build directement sur le serveur
 
@@ -79,7 +79,7 @@ Dans le fichier `docker-compose.portainer.yml`, modifiez :
 
 ```yaml
 ports:
-  - "8080:3000"  # Utilisera le port 8080 au lieu de 3000
+  - "8080:3000"  # Utilisera le port 8080 au lieu de 7293
 ```
 
 ### Utiliser un domaine personnalisé

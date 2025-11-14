@@ -103,10 +103,10 @@ docker history timinvest:latest
 
 ```bash
 # Lancer un conteneur test
-docker run -d -p 3000:3000 --name test-timinvest timinvest:latest
+docker run -d -p 7293:3000 --name test-timinvest timinvest:latest
 
 # Vérifier que ça fonctionne
-curl http://localhost:3000
+curl http://localhost:7293
 
 # Supprimer le test
 docker stop test-timinvest
@@ -116,7 +116,7 @@ docker rm test-timinvest
 ### Test avec Variables d'Environnement
 
 ```bash
-docker run -d -p 3000:3000 \
+docker run -d -p 7293:3000 \
   -e FINNHUB_API_KEY=votre_cle \
   -e NEXT_PUBLIC_APP_URL=http://test.com \
   --name test-timinvest \
@@ -330,9 +330,8 @@ docker build --no-cache -t timinvest:latest .
 ### Build très lent
 
 ```bash
-# Vérifier votre connexion
-# Utiliser un registry mirror npm
-echo "registry=https://registry.npmjs.org/" > .npmrc
+# Reconstruire sans cache
+docker build --no-cache -t timinvest:latest .
 ```
 
 ## 📈 Optimisations Avancées
