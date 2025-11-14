@@ -1,0 +1,100 @@
+# ═══════════════════════════════════════════════════════════════
+# TimInvest - Stack Portainer
+# ═══════════════════════════════════════════════════════════════
+#
+# 📋 INSTRUCTIONS D'UTILISATION DANS PORTAINER :
+# 
+# 1. Construisez d'abord l'image sur votre machine :
+#    docker build -t timinvest:latest .
+#
+# 2. Dans Portainer :
+#    - Allez dans "Stacks"
+#    - Cliquez sur "+ Add stack"
+#    - Nom : timinvest
+#    - Copiez-collez tout le contenu de ce fichier ci-dessous
+#    - Cliquez sur "Deploy the stack"
+#
+# 3. Attendez 30 secondes que l'application démarre
+#
+# 4. Accédez à : http://localhost:3000 (ou l'IP de votre serveur)
+#
+# ═══════════════════════════════════════════════════════════════
+# 🔧 CONFIGURATION :
+# 
+# Pour changer le port, modifiez la ligne "3000:3000" ci-dessous
+# Exemple pour port 8080 : "8080:3000"
+#
+# Pour votre propre domaine, modifiez NEXT_PUBLIC_APP_URL
+#
+# ═══════════════════════════════════════════════════════════════
+
+version: '3.8'
+
+services:
+  timinvest:
+    image: timinvest:latest
+    container_name: timinvest
+    restart: unless-stopped
+    
+    # Port d'accès (modifiez si nécessaire)
+    ports:
+      - "3000:3000"
+    
+    # Variables d'environnement
+    environment:
+      - NODE_ENV=production
+      # Clé API Finnhub (déjà configurée)
+      - FINNHUB_API_KEY=d4b96lhr01qrv4ataf3gd4b96lhr01qrv4ataf40
+      # URL de votre application
+      - NEXT_PUBLIC_APP_URL=http://localhost:3000
+    
+    # Volume pour persistance des données
+    volumes:
+      - timinvest-data:/app/data
+    
+    # Réseau
+    networks:
+      - timinvest-network
+    
+    # Vérification de santé
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    
+    # Labels pour Portainer
+    labels:
+      - "com.timinvest.description=Gestion de patrimoine boursier"
+      - "com.timinvest.version=1.0.0"
+      - "com.portainer.stack=timinvest"
+
+# Volumes
+volumes:
+  timinvest-data:
+    driver: local
+    labels:
+      - "com.timinvest.type=data"
+      - "com.timinvest.description=Données du portfolio (actions et dividendes)"
+
+# Réseaux
+networks:
+  timinvest-network:
+    driver: bridge
+    labels:
+      - "com.timinvest.network=main"
+
+# ═══════════════════════════════════════════════════════════════
+# 📊 APRÈS LE DÉPLOIEMENT :
+#
+# Dans Portainer, vous verrez :
+# - Container : timinvest (status: running, health: healthy)
+# - Volume : timinvest-data (vos données)
+# - Network : timinvest-network
+#
+# Pour voir les logs : Containers > timinvest > Logs
+# Pour redémarrer : Containers > timinvest > Restart
+#
+# ═══════════════════════════════════════════════════════════════
+

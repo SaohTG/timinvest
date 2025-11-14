@@ -1,0 +1,42 @@
+version: '3.8'
+
+# Stack Portainer pour TimInvest
+# Copiez ce fichier dans Portainer > Stacks > Add Stack > Web Editor
+
+services:
+  timinvest:
+    image: timinvest:latest
+    container_name: timinvest
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      # Clé API Finnhub (modifiez si nécessaire)
+      - NODE_ENV=production
+      - FINNHUB_API_KEY=d4b96lhr01qrv4ataf3gd4b96lhr01qrv4ataf40
+      - NEXT_PUBLIC_APP_URL=http://localhost:3000
+    volumes:
+      # Volume pour persister vos données (actions et dividendes)
+      - timinvest-data:/app/data
+    networks:
+      - timinvest-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    labels:
+      - "com.timinvest.description=Application de gestion de patrimoine boursier"
+      - "com.timinvest.version=1.0.0"
+
+volumes:
+  timinvest-data:
+    driver: local
+    labels:
+      - "com.timinvest.data=portfolio-data"
+
+networks:
+  timinvest-network:
+    driver: bridge
+
