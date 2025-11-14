@@ -1,33 +1,55 @@
 # 📊 Guide des Symboles Boursiers - TimInvest
 
+## 🔍 Recherche par ISIN (Nouveau !)
+
+Vous pouvez maintenant chercher une action par son **code ISIN** ! 🎉
+
+**Format ISIN :** 2 lettres pays + 10 caractères (ex: `FR0000121014`)
+
+### Exemples de recherche par ISIN :
+
+| ISIN | Action trouvée |
+|------|----------------|
+| `US0378331005` | Apple Inc. (AAPL) |
+| `FR0000121014` | LVMH (MC.PA) |
+| `ES0113900J37` | Banco Santander (SAN.MC) |
+| `DE0007164600` | SAP (SAP.DE) |
+
+**Comment utiliser :**
+1. Dans **Portfolio** → **Ajouter une action**
+2. Collez le code ISIN complet
+3. L'application trouve automatiquement l'action ! ✨
+
+---
+
 ## 🇺🇸 Actions Américaines (NYSE, NASDAQ)
 
-Utilisez le **symbole simple** (sans suffixe) :
+Utilisez le **symbole simple** (sans suffixe) ou l'**ISIN** :
 
-| Entreprise | Symbole Correct | ❌ Incorrect |
-|------------|----------------|--------------|
-| Apple | `AAPL` | AAPL.US |
-| Microsoft | `MSFT` | MSFT.US |
-| Google | `GOOGL` | GOOG.US |
-| Amazon | `AMZN` | AMZN.US |
-| Tesla | `TSLA` | TSLA.US |
+| Entreprise | Symbole | ISIN | ❌ Incorrect |
+|------------|---------|------|--------------|
+| Apple | `AAPL` | `US0378331005` | AAPL.US |
+| Microsoft | `MSFT` | `US5949181045` | MSFT.US |
+| Google | `GOOGL` | `US02079K3059` | GOOG.US |
+| Amazon | `AMZN` | `US0231351067` | AMZN.US |
+| Tesla | `TSLA` | `US88160R1014` | TSLA.US |
 
 ---
 
 ## 🇫🇷 Actions Françaises (Euronext Paris)
 
-Utilisez le suffixe **.PA** :
+Utilisez le suffixe **.PA** ou l'**ISIN** :
 
-| Entreprise | Symbole Correct | ❌ Incorrect |
-|------------|----------------|--------------|
-| LVMH | `MC.PA` | MC, LVMH |
-| L'Oréal | `OR.PA` | OR, LORAL |
-| TotalEnergies | `TTE.PA` | TTE, TOTAL |
-| BNP Paribas | `BNP.PA` | BNP |
-| Airbus | `AIR.PA` | AIR |
-| Sanofi | `SAN.PA` | SAN |
-| Schneider Electric | `SU.PA` | SU |
-| Hermès | `RMS.PA` | RMS |
+| Entreprise | Symbole | ISIN | ❌ Incorrect |
+|------------|---------|------|--------------|
+| LVMH | `MC.PA` | `FR0000121014` | MC, LVMH |
+| L'Oréal | `OR.PA` | `FR0000120321` | OR, LORAL |
+| TotalEnergies | `TTE.PA` | `FR0000120271` | TTE, TOTAL |
+| BNP Paribas | `BNP.PA` | `FR0000131104` | BNP |
+| Airbus | `AIR.PA` | `NL0000235190` | AIR |
+| Sanofi | `SAN.PA` | `FR0000120578` | SAN |
+| Schneider Electric | `SU.PA` | `FR0000121972` | SU |
+| Hermès | `RMS.PA` | `FR0000052292` | RMS |
 
 ---
 
@@ -59,15 +81,15 @@ Utilisez le suffixe **.L** :
 
 ## 🇪🇸 Actions Espagnoles (BME)
 
-Utilisez le suffixe **.MC** (Madrid) :
+Utilisez le suffixe **.MC** (Madrid) ou l'**ISIN** :
 
-| Entreprise | Symbole Correct | ❌ Incorrect |
-|------------|----------------|--------------|
-| Santander | `SAN.MC` | ES.PA, SAN |
-| BBVA | `BBVA.MC` | BBVA |
-| Telefónica | `TEF.MC` | TEF |
-| Inditex | `ITX.MC` | ITX |
-| Iberdrola | `IBE.MC` | IBE |
+| Entreprise | Symbole | ISIN | ❌ Incorrect |
+|------------|---------|------|--------------|
+| Santander | `SAN.MC` | `ES0113900J37` | ES.PA, SAN |
+| BBVA | `BBVA.MC` | `ES0113211835` | BBVA |
+| Telefónica | `TEF.MC` | `ES0178430E18` | TEF |
+| Inditex | `ITX.MC` | `ES0148396007` | ITX |
+| Iberdrola | `IBE.MC` | `ES0144580Y14` | IBE |
 
 ---
 
@@ -97,17 +119,31 @@ Utilisez le suffixe **.SW** :
 
 ## ❓ Comment trouver le bon symbole ?
 
-### Méthode 1 : Recherche dans l'application
+### Méthode 1 : **Par ISIN (Recommandé)** ⭐
+Le code ISIN est **unique et universel** !
+
+**Où trouver l'ISIN ?**
+- Sur votre relevé de compte bancaire/courtier
+- Sur [Boursorama](https://www.boursorama.com/)
+- Sur [Euronext](https://www.euronext.com/)
+- Sur votre application bancaire
+
+**Comment utiliser :**
+1. Copiez l'ISIN complet (12 caractères)
+2. Collez-le dans la recherche de TimInvest
+3. L'action est trouvée automatiquement ! ✨
+
+### Méthode 2 : Recherche par nom
 Dans **Portfolio** → **Ajouter une action**, tapez le **nom de l'entreprise** :
 - ✅ "Santander" → trouvera automatiquement le bon symbole
 - ✅ "LVMH" → trouvera MC.PA
 
-### Méthode 2 : Sites de référence
+### Méthode 3 : Sites de référence
 - [Yahoo Finance](https://finance.yahoo.com/)
 - [Finnhub](https://finnhub.io/)
 - [Investing.com](https://www.investing.com/)
 
-### Méthode 3 : Règles générales
+### Méthode 4 : Règles générales
 
 | Bourse | Suffixe | Exemple |
 |--------|---------|---------|
@@ -140,21 +176,38 @@ Dans **Portfolio** → **Ajouter une action**, tapez le **nom de l'entreprise** 
 
 ---
 
-## 💡 Astuce Pro
+## 💡 Astuces Pro
 
-Si vous ne trouvez pas votre action :
-1. Cherchez par **nom** dans l'application (pas symbole)
-2. Vérifiez sur **Yahoo Finance** quel est le symbole exact
-3. Ajoutez le suffixe correspondant à la bourse
+### Astuce 1 : Utilisez toujours l'ISIN quand disponible ! ⭐
+**L'ISIN est universel et ne change jamais**, contrairement aux symboles qui peuvent varier selon la bourse.
+
+### Astuce 2 : Où trouver l'ISIN ?
+- 📱 Application bancaire (détails de l'action)
+- 📄 Relevé de compte titre
+- 🌐 Sites financiers (Boursorama, Euronext, etc.)
+
+### Astuce 3 : Format ISIN
+- **2 lettres** = Code pays (FR, US, ES, DE, etc.)
+- **10 caractères** = Identifiant unique
+- **Exemple complet :** `FR0000121014` (LVMH)
 
 ---
 
 ## 🆘 Besoin d'aide ?
 
-Si un symbole ne fonctionne pas :
-1. Vérifiez le suffixe (.PA, .MC, .DE, etc.)
-2. Consultez ce guide
-3. Cherchez par nom d'entreprise
+**Ordre de préférence pour chercher une action :**
 
-**Symboles les plus utilisés fonctionnent déjà dans la recherche !** 🎉
+1. 🥇 **Par ISIN** (le plus fiable)
+   - Copiez l'ISIN depuis votre relevé
+   - Collez-le dans TimInvest
+   
+2. 🥈 **Par nom d'entreprise**
+   - Tapez "Apple", "LVMH", "Santander"
+   - L'application trouve le symbole
+   
+3. 🥉 **Par symbole**
+   - Si vous connaissez le symbole exact
+   - N'oubliez pas le suffixe (.PA, .MC, etc.)
+
+**70+ actions déjà dans la base + support ISIN = vous trouverez votre action !** 🎉
 

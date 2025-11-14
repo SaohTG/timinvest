@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { StockData } from '@/types';
+import { isValidISIN, isinToSymbol, getCountryFromISIN } from './isinMapping';
 
 const FINNHUB_API_KEY = process.env.FINNHUB_API_KEY || 'd4b96lhr01qrv4ataf3gd4b96lhr01qrv4ataf40';
 const CACHE_DURATION = 60000; // 1 minute
@@ -157,6 +158,35 @@ export async function getMultipleStockQuotes(symbols: string[]): Promise<Record<
 }
 
 export async function searchStocks(query: string): Promise<Array<{ symbol: string; name: string }>> {
+  const trimmedQuery = query.trim();
+  
+  // Vérifier si la recherche est un code ISIN
+  if (isValidISIN(trimmedQuery)) {
+    console.log(`ISIN detected: ${trimmedQuery}`);
+    const symbol = isinToSymbol(trimmedQuery);
+    
+    if (symbol) {
+      const country = getCountryFromISIN(trimmedQuery);
+      console.log(`ISIN ${trimmedQuery} → Symbol ${symbol} (${country})`);
+      
+      // Essayer de récupérer le nom via l'API
+      try {
+        const stockData = await getStockQuote(symbol);
+        if (stockData) {
+          return [{ symbol, name: `${stockData.name} (ISIN: ${trimmedQuery})` }];
+        }
+      } catch (error) {
+        console.error(`Error fetching data for ISIN ${trimmedQuery}:`, error);
+      }
+      
+      // Fallback : retourner juste le symbole
+      return [{ symbol, name: `${symbol} (ISIN: ${trimmedQuery})` }];
+    } else {
+      console.warn(`ISIN ${trimmedQuery} not found in database`);
+      return [];
+    }
+  }
+  
   // Base de données locale étendue d'actions populaires
   const stockDatabase = [
     // US Stocks - Tech
