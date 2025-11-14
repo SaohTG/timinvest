@@ -349,22 +349,30 @@ export async function searchStocks(query: string): Promise<Array<{ symbol: strin
   const INVALID_SYMBOLS = ['ES.PA', 'ES.MC', 'FR.PA', 'US.PA', 'DE.PA', 'IT.PA', 'GB.PA'];
   
   try {
-    // Appel à l'API Finnhub pour la recherche
+    // Appel à l'API Twelve Data pour la recherche (meilleure que Finnhub)
+    console.log(`[Twelve Data] Searching for: ${query}`);
     const response = await axios.get(
-      `https://finnhub.io/api/v1/search?q=${encodeURIComponent(query)}&token=${FINNHUB_API_KEY}`
+      `https://api.twelvedata.com/symbol_search?symbol=${encodeURIComponent(query)}&apikey=${TWELVE_DATA_API_KEY}`,
+      { timeout: 5000 }
     );
     
-    if (response.data && response.data.result && response.data.result.length > 0) {
-      // Combiner résultats API + base locale et dédupliquer
-      const apiResults = response.data.result
-        .filter((item: any) => !INVALID_SYMBOLS.includes(item.symbol)) // Filtrer symboles invalides
+    if (response.data && response.data.data && response.data.data.length > 0) {
+      console.log(`[Twelve Data] Found ${response.data.data.length} results`);
+      
+      // Mapper les résultats Twelve Data
+      const apiResults = response.data.data
+        .filter((item: any) => {
+          // Filtrer les symboles invalides et les instruments non-actions
+          return !INVALID_SYMBOLS.includes(item.symbol) && 
+                 item.instrument_type === 'Common Stock';
+        })
         .map((item: any) => ({
           symbol: item.symbol,
-          name: item.description || item.symbol,
+          name: `${item.instrument_name} (${item.exchange})`,
         }));
       
       // Fusionner avec la base locale sans doublons
-      const allResults = [...stockDatabase]; // Mettre la base locale en premier
+      const allResults = [...stockDatabase]; // Base locale en premier
       const symbols = new Set(stockDatabase.map(s => s.symbol));
       
       apiResults.forEach((result: any) => {
@@ -375,11 +383,42 @@ export async function searchStocks(query: string): Promise<Array<{ symbol: strin
       
       return sortSearchResults(allResults, query).slice(0, 15);
     }
-  } catch (error) {
-    console.error('Error searching stocks:', error);
+  } catch (error: any) {
+    console.error('[Twelve Data] Search error:', error.message);
+    
+    // Fallback sur Finnhub si Twelve Data échoue
+    try {
+      console.log(`[Finnhub] Fallback search for: ${query}`);
+      const response = await axios.get(
+        `https://finnhub.io/api/v1/search?q=${encodeURIComponent(query)}&token=${FINNHUB_API_KEY}`
+      );
+      
+      if (response.data && response.data.result && response.data.result.length > 0) {
+        const apiResults = response.data.result
+          .filter((item: any) => !INVALID_SYMBOLS.includes(item.symbol))
+          .map((item: any) => ({
+            symbol: item.symbol,
+            name: item.description || item.symbol,
+          }));
+        
+        const allResults = [...stockDatabase];
+        const symbols = new Set(stockDatabase.map(s => s.symbol));
+        
+        apiResults.forEach((result: any) => {
+          if (!symbols.has(result.symbol)) {
+            allResults.push(result);
+          }
+        });
+        
+        return sortSearchResults(allResults, query).slice(0, 15);
+      }
+    } catch (finnhubError) {
+      console.error('[Finnhub] Search error:', finnhubError);
+    }
   }
   
-  // Fallback : Recherche locale uniquement
+  // Fallback final : Recherche locale uniquement
+  console.log('[Local] Using local database only');
   return sortSearchResults(stockDatabase, query).slice(0, 15);
 }
 

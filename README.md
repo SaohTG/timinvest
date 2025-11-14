@@ -6,10 +6,13 @@ Application web moderne de gestion de patrimoine boursier, inspirée de Finary. 
 
 - **Dashboard Interactif** : Vue d'ensemble de votre portefeuille avec statistiques en temps réel
 - **Gestion de Portfolio** : Ajoutez, modifiez et supprimez vos actions facilement
-- **Suivi en Temps Réel** : Prix des actions mis à jour automatiquement
+- **Suivi en Temps Réel** : Prix des actions mis à jour automatiquement (API Twelve Data)
+- **Recherche Intelligente** : Par nom, symbole ou code ISIN
+- **Mode Sombre** : Interface moderne avec switch jour/nuit
 - **Calendrier de Dividendes** : Suivez vos revenus de dividendes avec un calendrier visuel
 - **Graphiques et Visualisations** : Graphiques de performance et répartition du portfolio
 - **Interface Moderne** : Design responsive et élégant avec Tailwind CSS
+- **Multi-API avec Fallback** : Twelve Data (principal) + Finnhub (backup)
 
 ## 📋 Prérequis
 
@@ -211,6 +214,8 @@ L'application sera accessible sur `http://localhost:5847`
 | [`START-HERE.md`](START-HERE.md) | Guide de démarrage |
 | [`SYMBOLS-GUIDE.md`](SYMBOLS-GUIDE.md) | **Guide des symboles boursiers** (US, FR, ES, etc.) |
 | [`API-ALTERNATIVES.md`](API-ALTERNATIVES.md) | **Comparatif API boursières** (Twelve Data, Yahoo, etc.) |
+| [`FAQ.md`](FAQ.md) | **Questions fréquentes** et résolution de problèmes |
+| [`MIGRATION-TWELVE-DATA.md`](MIGRATION-TWELVE-DATA.md) | Migration vers Twelve Data (temps réel) |
 
 ---
 
