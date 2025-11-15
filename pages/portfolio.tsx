@@ -18,6 +18,11 @@ export default function Portfolio() {
   const [totalValue, setTotalValue] = useState(0);
   const [totalGain, setTotalGain] = useState(0);
   const [totalGainPercent, setTotalGainPercent] = useState(0);
+  const [dividendStats, setDividendStats] = useState<{
+    totalAnnualDividends: number;
+    overallYieldOnCost: number;
+    monthlyProjections: Array<{ month: string; monthLabel: string; amount: number }>;
+  } | null>(null);
   
   const [formData, setFormData] = useState({
     symbol: '',
@@ -54,6 +59,15 @@ export default function Portfolio() {
       setTotalValue(statsData.stats?.totalValue || 0);
       setTotalGain(statsData.stats?.totalGain || 0);
       setTotalGainPercent(statsData.stats?.totalGainPercent || 0);
+      
+      // Récupérer les dividendes
+      const dividendsResponse = await fetch('/api/portfolio/dividends');
+      const dividendsData = await dividendsResponse.json();
+      setDividendStats({
+        totalAnnualDividends: dividendsData.totalAnnualDividends || 0,
+        overallYieldOnCost: dividendsData.overallYieldOnCost || 0,
+        monthlyProjections: dividendsData.monthlyProjections || [],
+      });
     } catch (error) {
       console.error('Error fetching portfolio data:', error);
     } finally {
@@ -208,16 +222,13 @@ export default function Portfolio() {
     { country: 'Autres', percentage: 19 },
   ];
 
-  // Calculer les dividendes projetés (simulation)
-  const projectedDividends = 156;
-  const dividendYield = 4.39;
-  const monthlyDividends = [
-    { month: 'Déc.', value: 45 },
-    { month: 'Mars', value: 38 },
-    { month: 'Mai', value: 42 },
-    { month: 'Juil.', value: 31 },
-    { month: 'Oct.', value: 0 },
-  ];
+  // Utiliser les dividendes réels ou des valeurs par défaut
+  const projectedDividends = dividendStats?.totalAnnualDividends || 0;
+  const dividendYield = dividendStats?.overallYieldOnCost || 0;
+  const monthlyDividends = dividendStats?.monthlyProjections.map(m => ({
+    month: m.monthLabel,
+    value: m.amount,
+  })) || [];
 
   // Scanner de frais (simulation)
   const feesRate = 2.80;
@@ -405,23 +416,41 @@ export default function Portfolio() {
           {/* Dividendes */}
           <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
             <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">DIVIDENDES</h3>
-            <div className="mb-4">
-              <p className="text-2xl font-bold text-gray-900 dark:text-white">{dividendYield}%</p>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Rendement</p>
-            </div>
-            <div className="mb-4">
-              <p className="text-lg font-semibold text-gray-900 dark:text-white">{formatCurrency(projectedDividends)}</p>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Projeté (12 mois)</p>
-            </div>
-            <div className="h-32">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={monthlyDividends}>
-                  <YAxis tick={{ fontSize: 10 }} />
-                  <Tooltip formatter={(value: number) => formatCurrency(value)} />
-                  <Bar dataKey="value" fill="#f59e0b" />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+            {dividendStats && dividendStats.totalAnnualDividends > 0 ? (
+              <>
+                <div className="mb-4">
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">{dividendYield.toFixed(2)}%</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Rendement sur coût d'acquisition</p>
+                </div>
+                <div className="mb-4">
+                  <p className="text-lg font-semibold text-gray-900 dark:text-white">{formatCurrency(projectedDividends)}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Projeté (12 mois)</p>
+                </div>
+                {monthlyDividends.length > 0 ? (
+                  <div className="h-32">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={monthlyDividends}>
+                        <XAxis dataKey="month" tick={{ fontSize: 10 }} />
+                        <YAxis tick={{ fontSize: 10 }} />
+                        <Tooltip formatter={(value: number) => formatCurrency(value)} />
+                        <Bar dataKey="value" fill="#f59e0b" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                ) : (
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Aucune projection disponible</p>
+                )}
+              </>
+            ) : (
+              <div className="text-center py-8">
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Aucun dividende détecté pour vos actions
+                </p>
+                <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">
+                  Les dividendes seront calculés automatiquement lorsque disponibles
+                </p>
+              </div>
+            )}
           </div>
         </div>
 

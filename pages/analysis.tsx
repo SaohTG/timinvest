@@ -12,10 +12,28 @@ export default function Analysis() {
   const [totalContribution, setTotalContribution] = useState(90000);
   const [generatedGains, setGeneratedGains] = useState(302767);
   const [annualReturn, setAnnualReturn] = useState(15.39);
+  const [dividendStats, setDividendStats] = useState<{
+    totalAnnualDividends: number;
+    overallYieldOnCost: number;
+  } | null>(null);
 
   useEffect(() => {
     calculateProjection();
+    fetchDividendStats();
   }, [monthlySavings, period]);
+
+  const fetchDividendStats = async () => {
+    try {
+      const response = await fetch('/api/portfolio/dividends');
+      const data = await response.json();
+      setDividendStats({
+        totalAnnualDividends: data.totalAnnualDividends || 0,
+        overallYieldOnCost: data.overallYieldOnCost || 0,
+      });
+    } catch (error) {
+      console.error('Error fetching dividend stats:', error);
+    }
+  };
 
   const calculateProjection = () => {
     const years = period === '10 ans' ? 10 : period === '20 ans' ? 20 : 30;
@@ -73,8 +91,8 @@ export default function Analysis() {
   const feesRate = 2.80;
   const feesAmount = 1;
   const potentialSavings = 48;
-  const passiveIncome = 4.39;
-  const projectedDividends = 156;
+  const passiveIncome = dividendStats?.overallYieldOnCost || 0;
+  const projectedDividends = dividendStats?.totalAnnualDividends || 0;
   const sectoralDiversification = 3;
   const geographicDiversification = 1;
 
@@ -160,21 +178,34 @@ export default function Analysis() {
           {/* Revenus passifs */}
           <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
             <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Revenus passifs</h3>
-            <div className="mb-4">
-              <p className="text-2xl font-bold text-gray-900 dark:text-white">{passiveIncome}%</p>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Rendement</p>
-            </div>
-            <div className="mb-4">
-              <p className="text-lg font-semibold text-gray-900 dark:text-white">{formatCurrency(projectedDividends)}</p>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Projeté (12 mois)</p>
-            </div>
-            <div className="h-16">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={[{ value: 35 }, { value: 38 }, { value: 42 }, { value: 31 }]}>
-                  <Bar dataKey="value" fill="#f59e0b" />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+            {dividendStats && dividendStats.totalAnnualDividends > 0 ? (
+              <>
+                <div className="mb-4">
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">{passiveIncome.toFixed(2)}%</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Rendement sur coût d'acquisition</p>
+                </div>
+                <div className="mb-4">
+                  <p className="text-lg font-semibold text-gray-900 dark:text-white">{formatCurrency(projectedDividends)}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Projeté (12 mois)</p>
+                </div>
+                <div className="h-16">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={[{ value: 35 }, { value: 38 }, { value: 42 }, { value: 31 }]}>
+                      <Bar dataKey="value" fill="#f59e0b" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </>
+            ) : (
+              <div className="text-center py-8">
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Aucun dividende détecté
+                </p>
+                <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">
+                  Les revenus passifs seront calculés lorsque des dividendes seront disponibles
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Scanner de diversification sectorielle */}

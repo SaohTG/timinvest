@@ -69,7 +69,11 @@ async function getStockProfile(symbol: string): Promise<{ name: string; currency
     'IBE.MC': { name: 'Iberdrola', currency: 'EUR' },
   };
   
-  return europeanStocks[symbol] || { name: symbol, currency: 'USD', marketCap: 0 };
+  const stock = europeanStocks[symbol];
+  if (stock) {
+    return { ...stock, marketCap: 0 };
+  }
+  return { name: symbol, currency: 'USD', marketCap: 0 };
 }
 
 // Fonction pour récupérer le prix depuis Twelve Data (API principale)
@@ -471,5 +475,142 @@ function sortSearchResults(stocks: Array<{ symbol: string; name: string }>, quer
     // 5. Par défaut : ordre alphabétique par nom
     return aName.localeCompare(bName);
   });
+}
+
+// Interface pour les données de dividendes
+export interface DividendData {
+  symbol: string;
+  dividend: number; // Dividende annuel par action
+  frequency: string; // 'quarterly', 'semi-annual', 'annual', etc.
+  lastDividendDate?: string;
+  nextDividendDate?: string;
+  yield?: number; // Rendement basé sur le prix actuel
+}
+
+// Cache pour les dividendes (durée plus longue car les dividendes changent moins souvent)
+const dividendCache = new Map<string, { data: DividendData; timestamp: number }>();
+const DIVIDEND_CACHE_DURATION = 3600000; // 1 heure
+
+// Fonction pour récupérer les dividendes depuis Finnhub
+export async function getStockDividends(symbol: string): Promise<DividendData | null> {
+  // Vérifier le cache
+  const cached = dividendCache.get(symbol);
+  if (cached && Date.now() - cached.timestamp < DIVIDEND_CACHE_DURATION) {
+    console.log(`[Dividend Cache] Hit for ${symbol}`);
+    return cached.data;
+  }
+
+  try {
+    console.log(`[Finnhub] Fetching dividends for ${symbol}...`);
+    
+    // Récupérer les dividendes historiques
+    const response = await axios.get(
+      `https://finnhub.io/api/v1/stock/dividend?symbol=${symbol}&token=${FINNHUB_API_KEY}`,
+      { timeout: 5000 }
+    );
+
+    if (response.data && response.data.length > 0) {
+      const dividends = response.data;
+      
+      // Calculer le dividende annuel moyen sur les 4 dernières années
+      const last4Years = dividends
+        .filter((d: any) => {
+          const date = new Date(d.date);
+          const now = new Date();
+          return date >= new Date(now.getFullYear() - 4, 0, 1);
+        })
+        .sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+      if (last4Years.length === 0) {
+        console.log(`[Finnhub] No recent dividends for ${symbol}`);
+        return null;
+      }
+
+      // Calculer le total des dividendes par année
+      const dividendsByYear = new Map<number, number>();
+      last4Years.forEach((d: any) => {
+        const year = new Date(d.date).getFullYear();
+        dividendsByYear.set(year, (dividendsByYear.get(year) || 0) + d.amount);
+      });
+
+      // Calculer la moyenne annuelle
+      const annualDividends = Array.from(dividendsByYear.values());
+      const averageAnnualDividend = annualDividends.reduce((a, b) => a + b, 0) / annualDividends.length;
+
+      // Déterminer la fréquence (basée sur le nombre de dividendes par an)
+      const avgDividendsPerYear = last4Years.length / Math.min(4, dividendsByYear.size);
+      let frequency = 'annual';
+      if (avgDividendsPerYear >= 3.5) frequency = 'quarterly';
+      else if (avgDividendsPerYear >= 1.5) frequency = 'semi-annual';
+
+      // Trouver les dates du dernier et prochain dividende
+      const lastDividend = last4Years[0];
+      const lastDividendDate = lastDividend.date;
+      
+      // Estimer la prochaine date de dividende
+      let nextDividendDate: string | undefined;
+      if (frequency === 'quarterly') {
+        const lastDate = new Date(lastDividendDate);
+        lastDate.setMonth(lastDate.getMonth() + 3);
+        nextDividendDate = lastDate.toISOString().split('T')[0];
+      } else if (frequency === 'semi-annual') {
+        const lastDate = new Date(lastDividendDate);
+        lastDate.setMonth(lastDate.getMonth() + 6);
+        nextDividendDate = lastDate.toISOString().split('T')[0];
+      } else {
+        const lastDate = new Date(lastDividendDate);
+        lastDate.setFullYear(lastDate.getFullYear() + 1);
+        nextDividendDate = lastDate.toISOString().split('T')[0];
+      }
+
+      const dividendData: DividendData = {
+        symbol,
+        dividend: averageAnnualDividend,
+        frequency,
+        lastDividendDate,
+        nextDividendDate,
+      };
+
+      // Mettre en cache
+      dividendCache.set(symbol, { data: dividendData, timestamp: Date.now() });
+      
+      console.log(`[Finnhub] ✓ Dividends for ${symbol}: ${averageAnnualDividend.toFixed(2)} ${frequency}`);
+      return dividendData;
+    }
+
+    console.log(`[Finnhub] No dividend data for ${symbol}`);
+    return null;
+  } catch (error: any) {
+    console.error(`[Finnhub] Error fetching dividends for ${symbol}:`, error.message);
+    return null;
+  }
+}
+
+// Fonction pour récupérer les dividendes de plusieurs actions
+export async function getMultipleStockDividends(symbols: string[]): Promise<Record<string, DividendData>> {
+  const results: Record<string, DividendData> = {};
+  
+  // Traiter par batch pour respecter les limites de l'API
+  const batchSize = 5;
+  for (let i = 0; i < symbols.length; i += batchSize) {
+    const batch = symbols.slice(i, i + batchSize);
+    const promises = batch.map(symbol => 
+      getStockDividends(symbol).then(data => ({ symbol, data }))
+    );
+    
+    const batchResults = await Promise.all(promises);
+    batchResults.forEach(({ symbol, data }) => {
+      if (data) {
+        results[symbol] = data;
+      }
+    });
+    
+    // Attendre un peu entre les batches pour respecter les limites
+    if (i + batchSize < symbols.length) {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+  }
+  
+  return results;
 }
 
