@@ -22,5 +22,40 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+  
+  /* Scroll personnalisé pour les cartes horizontales */
+  .scroll-cards {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+  }
+  
+  .scroll-cards::-webkit-scrollbar {
+    height: 8px;
+  }
+  
+  .scroll-cards::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .scroll-cards::-webkit-scrollbar-thumb {
+    background-color: rgba(156, 163, 175, 0.5);
+    border-radius: 4px;
+  }
+  
+  .scroll-cards::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(156, 163, 175, 0.7);
+  }
+  
+  .dark .scroll-cards {
+    scrollbar-color: rgba(75, 85, 99, 0.5) transparent;
+  }
+  
+  .dark .scroll-cards::-webkit-scrollbar-thumb {
+    background-color: rgba(75, 85, 99, 0.5);
+  }
+  
+  .dark .scroll-cards::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(75, 85, 99, 0.7);
+  }
 }
 
