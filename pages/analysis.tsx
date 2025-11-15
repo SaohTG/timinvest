@@ -88,9 +88,6 @@ export default function Analysis() {
   const projectionData = generateProjectionData();
 
   // Données pour les cartes d'analyse
-  const feesRate = 2.80;
-  const feesAmount = 1;
-  const potentialSavings = 48;
   const passiveIncome = dividendStats?.overallYieldOnCost || 0;
   const projectedDividends = dividendStats?.totalAnnualDividends || 0;
   const sectoralDiversification = 3;
@@ -145,36 +142,6 @@ export default function Analysis() {
 
         {/* Cartes d'analyse */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Scanner de frais */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-white">Scanner de frais</h3>
-              <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs font-medium rounded-full">
-                NOUVEAU
-              </span>
-            </div>
-            <div className="mb-4">
-              <p className="text-red-600 dark:text-red-400 font-semibold mb-1">Trop élevé</p>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white">{feesRate}%</p>
-            </div>
-            <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400 mb-4">
-              <div className="flex justify-between">
-                <span>1 €/an</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Économies potentielles</span>
-                <span className="font-semibold text-gray-900 dark:text-white">{formatCurrency(potentialSavings)}</span>
-              </div>
-            </div>
-            <div className="h-16">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={[{ value: 1 }, { value: 1.2 }, { value: 1.1 }, { value: 1.3 }]}>
-                  <Line type="monotone" dataKey="value" stroke="#f59e0b" strokeWidth={2} dot={false} />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-
           {/* Revenus passifs */}
           <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
             <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Revenus passifs</h3>

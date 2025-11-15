@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
-import { Plus, Search, X, Edit2, Trash2, ChevronLeft, ChevronDown, RefreshCw, TrendingUp, TrendingDown } from 'lucide-react';
+import { Plus, Search, X, Edit2, Trash2, ChevronLeft, ChevronDown, TrendingUp, TrendingDown } from 'lucide-react';
 import { Stock, PortfolioPosition } from '@/types';
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip, BarChart, Bar } from 'recharts';
 import { format } from 'date-fns';
@@ -230,10 +230,6 @@ export default function Portfolio() {
     value: m.amount,
   })) || [];
 
-  // Scanner de frais (simulation)
-  const feesRate = 2.80;
-  const feesAmount = 1;
-  const potentialSavings = 48;
 
   if (loading) {
     return (
@@ -356,37 +352,7 @@ export default function Portfolio() {
         </div>
 
         {/* Grille de sections */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Scanner de frais */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-white">Scanner de frais</h3>
-              <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs font-medium rounded-full">
-                PLUS
-              </span>
-            </div>
-            <div className="mb-4">
-              <p className="text-red-600 dark:text-red-400 font-semibold mb-1">Trop élevé</p>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white">{feesRate}%</p>
-            </div>
-            <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400 mb-4">
-              <div className="flex justify-between">
-                <span>1 €/an</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Économies potentielles</span>
-                <span className="font-semibold text-gray-900 dark:text-white">{formatCurrency(potentialSavings)}</span>
-              </div>
-            </div>
-            <div className="h-16">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={[{ value: 1 }, { value: 1.2 }, { value: 1.1 }, { value: 1.3 }]}>
-                  <Line type="monotone" dataKey="value" stroke="#f59e0b" strokeWidth={2} dot={false} />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Diversification géographique */}
           <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between mb-4">
@@ -485,14 +451,7 @@ export default function Portfolio() {
         <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
           <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <button className="px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-medium">
-                  Comptes
-                </button>
-                <button className="px-4 py-2 text-gray-600 dark:text-gray-400 rounded-lg text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700">
-                  Transactions
-                </button>
-              </div>
+              <h3 className="text-sm font-semibold text-gray-900 dark:text-white">Actifs</h3>
               <select className="px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
                 <option>Tout</option>
               </select>
@@ -500,24 +459,6 @@ export default function Portfolio() {
           </div>
 
           <div className="p-6">
-            <div className="mb-4">
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">Actifs</h3>
-              <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-primary-600 rounded-lg flex items-center justify-center text-white font-bold">
-                    TR
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-900 dark:text-white">Trade Republic Portfolio</p>
-                  </div>
-                </div>
-                <button className="flex items-center space-x-2 px-4 py-2 bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg text-sm font-medium hover:bg-gray-300 dark:hover:bg-gray-500 transition-colors">
-                  <RefreshCw className="h-4 w-4" />
-                  <span>SYNC. MANUELLE</span>
-                </button>
-              </div>
-            </div>
-
             {positions.length > 0 ? (
               <div className="overflow-x-auto">
                 <table className="min-w-full">
