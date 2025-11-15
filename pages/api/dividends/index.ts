@@ -1,30 +1,42 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getAllDividends, addDividend, deleteDividend, getDividendsByDateRange } from '@/lib/database';
+import { getUserFromRequest } from '@/lib/auth-helper';
 
 export default function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   try {
+    // Récupérer l'utilisateur connecté
+    const user = getUserFromRequest(req);
+    
+    if (!user) {
+      return res.status(401).json({ error: 'Non authentifié' });
+    }
+
     switch (req.method) {
       case 'GET':
         const { startDate, endDate } = req.query;
         
         if (startDate && endDate) {
-          const dividends = getDividendsByDateRange(startDate as string, endDate as string);
+          const dividends = getDividendsByDateRange(startDate as string, endDate as string, user.userId);
           return res.status(200).json(dividends);
         }
         
-        const allDividends = getAllDividends();
+        const allDividends = getAllDividends(user.userId);
         return res.status(200).json(allDividends);
         
       case 'POST':
-        const newDividend = addDividend(req.body);
+        // Ajouter le userId au nouveau dividende
+        const newDividend = addDividend({
+          ...req.body,
+          userId: user.userId,
+        });
         return res.status(201).json(newDividend);
         
       case 'DELETE':
         const { id } = req.query;
-        const deleted = deleteDividend(id as string);
+        const deleted = deleteDividend(id as string, user.userId);
         if (!deleted) {
           return res.status(404).json({ error: 'Dividend not found' });
         }

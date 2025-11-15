@@ -22,15 +22,22 @@ function initializeDataFiles() {
 }
 
 // Stocks CRUD operations
-export function getAllStocks(): Stock[] {
+export function getAllStocks(userId?: string): Stock[] {
   initializeDataFiles();
   const data = fs.readFileSync(STOCKS_FILE, 'utf-8');
-  return JSON.parse(data);
+  const stocks: Stock[] = JSON.parse(data);
+  
+  // Si userId est fourni, filtrer par utilisateur
+  if (userId) {
+    return stocks.filter(stock => stock.userId === userId);
+  }
+  
+  return stocks;
 }
 
-export function getStockById(id: string): Stock | undefined {
-  const stocks = getAllStocks();
-  return stocks.find(stock => stock.id === id);
+export function getStockById(id: string, userId: string): Stock | undefined {
+  const stocks = getAllStocks(userId);
+  return stocks.find(stock => stock.id === id && stock.userId === userId);
 }
 
 export function addStock(stock: Omit<Stock, 'id'>): Stock {
@@ -44,9 +51,9 @@ export function addStock(stock: Omit<Stock, 'id'>): Stock {
   return newStock;
 }
 
-export function updateStock(id: string, updates: Partial<Stock>): Stock | null {
+export function updateStock(id: string, userId: string, updates: Partial<Stock>): Stock | null {
   const stocks = getAllStocks();
-  const index = stocks.findIndex(stock => stock.id === id);
+  const index = stocks.findIndex(stock => stock.id === id && stock.userId === userId);
   
   if (index === -1) return null;
   
@@ -55,9 +62,9 @@ export function updateStock(id: string, updates: Partial<Stock>): Stock | null {
   return stocks[index];
 }
 
-export function deleteStock(id: string): boolean {
+export function deleteStock(id: string, userId: string): boolean {
   const stocks = getAllStocks();
-  const filteredStocks = stocks.filter(stock => stock.id !== id);
+  const filteredStocks = stocks.filter(stock => !(stock.id === id && stock.userId === userId));
   
   if (filteredStocks.length === stocks.length) return false;
   
@@ -66,10 +73,17 @@ export function deleteStock(id: string): boolean {
 }
 
 // Dividends CRUD operations
-export function getAllDividends(): Dividend[] {
+export function getAllDividends(userId?: string): Dividend[] {
   initializeDataFiles();
   const data = fs.readFileSync(DIVIDENDS_FILE, 'utf-8');
-  return JSON.parse(data);
+  const dividends: Dividend[] = JSON.parse(data);
+  
+  // Si userId est fourni, filtrer par utilisateur
+  if (userId) {
+    return dividends.filter(dividend => dividend.userId === userId);
+  }
+  
+  return dividends;
 }
 
 export function addDividend(dividend: Omit<Dividend, 'id'>): Dividend {
@@ -83,9 +97,9 @@ export function addDividend(dividend: Omit<Dividend, 'id'>): Dividend {
   return newDividend;
 }
 
-export function deleteDividend(id: string): boolean {
+export function deleteDividend(id: string, userId: string): boolean {
   const dividends = getAllDividends();
-  const filteredDividends = dividends.filter(div => div.id !== id);
+  const filteredDividends = dividends.filter(div => !(div.id === id && div.userId === userId));
   
   if (filteredDividends.length === dividends.length) return false;
   
@@ -93,8 +107,8 @@ export function deleteDividend(id: string): boolean {
   return true;
 }
 
-export function getDividendsByDateRange(startDate: string, endDate: string): Dividend[] {
-  const dividends = getAllDividends();
+export function getDividendsByDateRange(startDate: string, endDate: string, userId: string): Dividend[] {
+  const dividends = getAllDividends(userId);
   return dividends.filter(div => {
     const paymentDate = new Date(div.paymentDate);
     return paymentDate >= new Date(startDate) && paymentDate <= new Date(endDate);

@@ -1,5 +1,6 @@
 export interface Stock {
   id: string;
+  userId: string; // ID de l'utilisateur propriétaire
   symbol: string;
   name: string;
   quantity: number;
@@ -22,6 +23,7 @@ export interface StockData {
 
 export interface Dividend {
   id: string;
+  userId: string; // ID de l'utilisateur propriétaire
   stockSymbol: string;
   stockName: string;
   amount: number;

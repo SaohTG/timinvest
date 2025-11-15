@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getAllStocks } from '@/lib/database';
 import { getMultipleStockQuotes } from '@/lib/stockApi';
+import { getUserFromRequest } from '@/lib/auth-helper';
 import { PortfolioStats, PortfolioPosition } from '@/types';
 
 export default async function handler(
@@ -13,7 +14,14 @@ export default async function handler(
   }
 
   try {
-    const stocks = getAllStocks();
+    // Récupérer l'utilisateur connecté
+    const user = getUserFromRequest(req);
+    
+    if (!user) {
+      return res.status(401).json({ error: 'Non authentifié' });
+    }
+
+    const stocks = getAllStocks(user.userId);
     
     if (stocks.length === 0) {
       const emptyStats: PortfolioStats = {

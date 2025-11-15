@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getAllStocks } from '@/lib/database';
 import { getMultipleStockDividends } from '@/lib/stockApi';
+import { getUserFromRequest } from '@/lib/auth-helper';
 import { addMonths, format, startOfMonth, endOfMonth, isAfter, isBefore } from 'date-fns';
 
 interface PortfolioDividend {
@@ -40,7 +41,14 @@ export default async function handler(
   }
 
   try {
-    const stocks = getAllStocks();
+    // Récupérer l'utilisateur connecté
+    const user = getUserFromRequest(req);
+    
+    if (!user) {
+      return res.status(401).json({ error: 'Non authentifié' });
+    }
+
+    const stocks = getAllStocks(user.userId);
     
     if (stocks.length === 0) {
       const emptyStats: PortfolioDividendStats = {
