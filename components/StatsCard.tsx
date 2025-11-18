@@ -17,13 +17,13 @@ export default function StatsCard({ title, value, change, changeType = 'neutral'
     'text-gray-600 dark:text-gray-400';
     
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-700 p-6 border border-gray-200 dark:border-gray-700 transition-colors">
+    <div className="group bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-xl shadow-md dark:shadow-gray-700/50 p-6 border border-gray-200/50 dark:border-gray-700/50 card-hover">
       <div className="flex items-center justify-between">
         <div className="flex-1">
-          <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{title}</p>
-          <p className="mt-2 text-3xl font-semibold text-gray-900 dark:text-white">{value}</p>
+          <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">{title}</p>
+          <p className="mt-2 text-3xl font-bold text-gray-900 dark:text-white transition-colors duration-200">{value}</p>
           {change && (
-            <p className={`mt-2 text-sm font-medium ${changeColor}`}>
+            <p className={`mt-2 text-sm font-semibold ${changeColor}`}>
               {change}
             </p>
           )}
@@ -32,7 +32,7 @@ export default function StatsCard({ title, value, change, changeType = 'neutral'
           )}
         </div>
         <div className="ml-4">
-          <div className="bg-primary-100 dark:bg-primary-900/30 rounded-full p-3 transition-colors">
+          <div className="bg-gradient-to-br from-primary-100 to-primary-50 dark:from-primary-900/40 dark:to-primary-800/30 rounded-xl p-3 transition-all duration-200 group-hover:scale-110 group-hover:shadow-lg shadow-md">
             <Icon className="h-6 w-6 text-primary-600 dark:text-primary-400" />
           </div>
         </div>

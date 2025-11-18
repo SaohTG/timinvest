@@ -94,33 +94,35 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="space-y-6">
+      <div className="space-y-6 animate-fade-in">
         {/* Top Section: Patrimoine net et Performance */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Patrimoine net */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center space-x-2">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Patrimoine net</h2>
-                <ChevronDown className="h-4 w-4 text-gray-400" />
+          <div className="group bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-xl p-6 border border-gray-200/50 dark:border-gray-700/50 shadow-md card-hover relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-primary-500/5 rounded-full blur-3xl -mr-16 -mt-16"></div>
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center space-x-2">
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Patrimoine net</h2>
+                  <ChevronDown className="h-4 w-4 text-gray-400 transition-transform duration-200 group-hover:rotate-180" />
+                </div>
+                <span className="text-sm text-gray-500 dark:text-gray-400 bg-gray-100/50 dark:bg-gray-700/50 px-3 py-1 rounded-lg">
+                  {format(new Date(), 'd MMM yyyy', { locale: fr })}
+                </span>
               </div>
-              <span className="text-sm text-gray-500 dark:text-gray-400">
-                {format(new Date(), 'd MMM yyyy', { locale: fr })}
-              </span>
-            </div>
-            
-            <div className="mb-4">
-              <p className="text-3xl font-bold text-gray-900 dark:text-white">
-                {formatCurrency(stats?.totalValue || 0)}
-              </p>
-            </div>
+              
+              <div className="mb-4">
+                <p className="text-3xl font-bold text-gray-900 dark:text-white transition-colors duration-200">
+                  {formatCurrency(stats?.totalValue || 0)}
+                </p>
+              </div>
 
             {/* Filtres */}
             <div className="flex items-center justify-between mb-4">
               <select
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value)}
-                className="px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                className="px-3 py-1.5 text-sm border border-gray-300/50 dark:border-gray-600/50 rounded-lg bg-white/50 dark:bg-gray-700/50 text-gray-900 dark:text-white backdrop-blur-sm transition-all duration-200 hover:border-primary-300 dark:hover:border-primary-600 focus:ring-2 focus:ring-primary-500/20"
               >
                 <option>Toutes les catégories</option>
                 <option>Actions</option>
@@ -128,15 +130,15 @@ export default function Home() {
                 <option>Cryptomonnaies</option>
               </select>
               
-              <div className="flex space-x-1">
+              <div className="flex space-x-1 bg-gray-100/50 dark:bg-gray-700/50 p-1 rounded-lg backdrop-blur-sm">
                 {(['1J', '7J', '1M', 'YTD', '1A', 'TOUT'] as const).map((range) => (
                   <button
                     key={range}
                     onClick={() => setTimeRange(range)}
-                    className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
+                    className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 ${
                       timeRange === range
-                        ? 'bg-primary-600 text-white'
-                        : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                        ? 'bg-gradient-to-r from-primary-600 to-primary-500 text-white shadow-md shadow-primary-500/30'
+                        : 'text-gray-700 dark:text-gray-300 hover:bg-white/50 dark:hover:bg-gray-600/50'
                     }`}
                   >
                     {range}
@@ -178,30 +180,33 @@ export default function Home() {
                 </LineChart>
               </ResponsiveContainer>
             </div>
+            </div>
           </div>
 
           {/* Performance */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Performance</h2>
-              <ChevronDown className="h-4 w-4 text-gray-400" />
-            </div>
-            
-            <div className="mb-4">
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Plus-value - Tout</p>
-              <div className="flex items-center space-x-2">
-                <span className={`text-2xl font-bold ${isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
-                  {formatCurrency(totalGain)}
-                </span>
-                <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                  isPositive
-                    ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
-                    : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
-                }`}>
-                  {formatPercent(totalGainPercent)}
-                </span>
+          <div className="group bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-xl p-6 border border-gray-200/50 dark:border-gray-700/50 shadow-md card-hover relative overflow-hidden">
+            <div className={`absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl -mr-16 -mt-16 ${isPositive ? 'bg-green-500/10' : 'bg-red-500/10'}`}></div>
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Performance</h2>
+                <ChevronDown className="h-4 w-4 text-gray-400 transition-transform duration-200 group-hover:rotate-180" />
               </div>
-            </div>
+              
+              <div className="mb-4">
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Plus-value - Tout</p>
+                <div className="flex items-center space-x-2">
+                  <span className={`text-2xl font-bold transition-colors duration-200 ${isPositive ? 'gradient-text-success' : 'gradient-text-danger'}`}>
+                    {formatCurrency(totalGain)}
+                  </span>
+                  <span className={`px-3 py-1 rounded-full text-sm font-medium shadow-sm ${
+                    isPositive
+                      ? 'bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 text-green-700 dark:text-green-300'
+                      : 'bg-gradient-to-r from-red-100 to-rose-100 dark:from-red-900/30 dark:to-rose-900/30 text-red-700 dark:text-red-300'
+                  }`}>
+                    {formatPercent(totalGainPercent)}
+                  </span>
+                </div>
+              </div>
 
             <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
               La plus-value latente est la différence entre votre prix d'achat unitaire et le prix actuel. 
@@ -210,16 +215,17 @@ export default function Home() {
 
             <a
               href="#"
-              className="text-sm text-primary-600 dark:text-primary-400 hover:underline flex items-center"
+              className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 flex items-center group/link transition-colors duration-200"
             >
               En savoir plus
-              <ChevronRight className="h-4 w-4 ml-1" />
+              <ChevronRight className="h-4 w-4 ml-1 transition-transform duration-200 group-hover/link:translate-x-1" />
             </a>
+            </div>
           </div>
         </div>
 
         {/* Ma performance */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+        <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-xl p-6 border border-gray-200/50 dark:border-gray-700/50 shadow-md card-hover">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Ma performance</h2>
             
@@ -227,7 +233,7 @@ export default function Home() {
               <select
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value)}
-                className="px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                className="px-3 py-1.5 text-sm border border-gray-300/50 dark:border-gray-600/50 rounded-lg bg-white/50 dark:bg-gray-700/50 text-gray-900 dark:text-white backdrop-blur-sm transition-all duration-200 hover:border-primary-300 dark:hover:border-primary-600 focus:ring-2 focus:ring-primary-500/20"
               >
                 <option>Toutes les catégories</option>
                 <option>Actions</option>
@@ -237,18 +243,18 @@ export default function Home() {
               
               <div className="flex items-center space-x-2">
                 <span className="text-sm text-gray-600 dark:text-gray-400">Trier par</span>
-                <select className="px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                <select className="px-3 py-1.5 text-sm border border-gray-300/50 dark:border-gray-600/50 rounded-lg bg-white/50 dark:bg-gray-700/50 text-gray-900 dark:text-white backdrop-blur-sm transition-all duration-200 hover:border-primary-300 dark:hover:border-primary-600 focus:ring-2 focus:ring-primary-500/20">
                   <option>Performance</option>
                   <option>Valeur</option>
                   <option>Nom</option>
                 </select>
               </div>
 
-              <div className="flex items-center space-x-1">
-                <button className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+              <div className="flex items-center space-x-1 bg-gray-100/50 dark:bg-gray-700/50 p-1 rounded-lg backdrop-blur-sm">
+                <button className="p-2 rounded-md hover:bg-white/50 dark:hover:bg-gray-600/50 transition-all duration-200 hover:scale-110">
                   <ChevronLeft className="h-5 w-5 text-gray-600 dark:text-gray-400" />
                 </button>
-                <button className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                <button className="p-2 rounded-md hover:bg-white/50 dark:hover:bg-gray-600/50 transition-all duration-200 hover:scale-110">
                   <ChevronRight className="h-5 w-5 text-gray-600 dark:text-gray-400" />
                 </button>
               </div>
@@ -271,7 +277,7 @@ export default function Home() {
               </p>
               <a
                 href="/portfolio"
-                className="inline-flex items-center px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg text-sm font-medium transition-colors"
+                className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-700 hover:to-primary-600 text-white rounded-xl text-sm font-medium transition-all duration-200 shadow-lg shadow-primary-500/30 hover:shadow-xl hover:shadow-primary-500/40 hover:scale-105"
               >
                 Ajouter une action
               </a>

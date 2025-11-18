@@ -116,36 +116,40 @@ export default function Layout({ children }: LayoutProps) {
   ];
   
   return (
-    <div className={`min-h-screen transition-colors ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
+    <div className={`min-h-screen transition-colors ${darkMode ? 'bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800' : 'bg-gradient-to-br from-gray-50 via-white to-gray-100'}`}>
       <div className="flex">
         {/* Sidebar */}
-        <aside className={`w-64 min-h-screen transition-colors ${darkMode ? 'bg-gray-800 border-r border-gray-700' : 'bg-white border-r border-gray-200'}`}>
+        <aside className={`w-64 min-h-screen transition-all duration-300 ${darkMode ? 'bg-gray-800/95 backdrop-blur-xl border-r border-gray-700/50 shadow-2xl' : 'bg-white/95 backdrop-blur-xl border-r border-gray-200/50 shadow-soft'}`}>
           <div className="p-6">
-            <div className="flex items-center mb-8">
-              <TrendingUp className="h-8 w-8 text-primary-600 dark:text-primary-400" />
-              <span className="ml-2 text-xl font-bold text-gray-900 dark:text-white">TimInvest</span>
+            <div className="flex items-center mb-8 animate-fade-in">
+              <div className="relative">
+                <TrendingUp className="h-8 w-8 text-primary-600 dark:text-primary-400 drop-shadow-lg" />
+                <div className="absolute inset-0 bg-primary-400/20 rounded-full blur-xl pulse-glow"></div>
+              </div>
+              <span className="ml-2 text-xl font-bold gradient-text">TimInvest</span>
             </div>
             
-            <nav className="space-y-1">
-              {navigation.map((item) => {
+            <nav className="space-y-2">
+              {navigation.map((item, index) => {
                 const Icon = item.icon;
                 const isActive = router.pathname === item.href;
                 return (
                   <Link
                     key={item.name}
                     href={item.href}
-                    className={`flex items-center justify-between px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
+                    className={`group flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 animate-slide-up ${
                       isActive
-                        ? `${darkMode ? 'bg-primary-900/30 text-primary-400' : 'bg-primary-100 text-primary-700'}`
-                        : `${darkMode ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-600 hover:bg-gray-100'}`
+                        ? `${darkMode ? 'bg-gradient-to-r from-primary-900/40 to-primary-800/30 text-primary-300 shadow-lg shadow-primary-500/20' : 'bg-gradient-to-r from-primary-100 to-primary-50 text-primary-700 shadow-md'}`
+                        : `${darkMode ? 'text-gray-300 hover:bg-gray-700/50 hover:text-white' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'}`
                     }`}
+                    style={{ animationDelay: `${index * 50}ms` }}
                   >
                     <div className="flex items-center">
-                      <Icon className="h-5 w-5 mr-3" />
+                      <Icon className={`h-5 w-5 mr-3 transition-transform duration-200 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`} />
                       {item.name}
                     </div>
                     {item.hasArrow && (
-                      <ChevronRight className="h-4 w-4" />
+                      <ChevronRight className={`h-4 w-4 transition-transform duration-200 ${isActive ? 'translate-x-1' : 'group-hover:translate-x-1'}`} />
                     )}
                   </Link>
                 );
@@ -154,12 +158,15 @@ export default function Layout({ children }: LayoutProps) {
           </div>
           
           {/* User section */}
-          <div className={`absolute bottom-0 w-64 p-4 border-t ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+          <div className={`absolute bottom-0 w-64 p-4 border-t backdrop-blur-sm ${darkMode ? 'border-gray-700/50 bg-gray-800/50' : 'border-gray-200/50 bg-white/50'}`}>
             {user ? (
-              <div className="space-y-2">
+              <div className="space-y-3 animate-fade-in">
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 rounded-full bg-primary-600 flex items-center justify-center text-white font-semibold">
-                    {getInitials(user.name)}
+                  <div className="relative">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center text-white font-semibold shadow-lg shadow-primary-500/30 ring-2 ring-primary-500/20">
+                      {getInitials(user.name)}
+                    </div>
+                    <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white dark:border-gray-800"></div>
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className={`text-sm font-medium truncate ${darkMode ? 'text-white' : 'text-gray-900'}`}>
@@ -172,10 +179,10 @@ export default function Layout({ children }: LayoutProps) {
                 </div>
                 <button
                   onClick={handleLogout}
-                  className={`w-full flex items-center justify-center px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  className={`w-full flex items-center justify-center px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                     darkMode 
-                      ? 'text-gray-300 hover:bg-gray-700' 
-                      : 'text-gray-600 hover:bg-gray-100'
+                      ? 'text-gray-300 hover:bg-gray-700/50 hover:text-white hover:shadow-md' 
+                      : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 hover:shadow-sm'
                   }`}
                 >
                   <LogOut className="h-4 w-4 mr-2" />
@@ -183,8 +190,8 @@ export default function Layout({ children }: LayoutProps) {
                 </button>
               </div>
             ) : (
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-full bg-gray-400 flex items-center justify-center text-white font-semibold">
+              <div className="flex items-center space-x-3 animate-fade-in">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-400 to-gray-500 flex items-center justify-center text-white font-semibold shadow-md">
                   ?
                 </div>
                 <div className="flex-1">
@@ -198,37 +205,38 @@ export default function Layout({ children }: LayoutProps) {
         {/* Main content */}
         <div className="flex-1">
           {/* Top Header */}
-          <header className={`sticky top-0 z-10 transition-colors ${darkMode ? 'bg-gray-900 border-b border-gray-700' : 'bg-white border-b border-gray-200'}`}>
+          <header className={`sticky top-0 z-10 transition-all duration-300 ${darkMode ? 'bg-gray-900/80 backdrop-blur-xl border-b border-gray-700/50 shadow-lg' : 'bg-white/80 backdrop-blur-xl border-b border-gray-200/50 shadow-soft'}`}>
             <div className="px-6 py-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
-                  <button className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    darkMode ? 'bg-red-900/30 text-red-400 border border-red-800' : 'bg-red-50 text-red-600 border border-red-200'
+                  <button className={`group px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 hover:scale-105 ${
+                    darkMode ? 'bg-gradient-to-r from-red-900/40 to-red-800/30 text-red-300 border border-red-800/50 hover:shadow-lg hover:shadow-red-500/20' : 'bg-gradient-to-r from-red-50 to-red-100/50 text-red-600 border border-red-200 hover:shadow-md'
                   }`}>
                     <span className="flex items-center">
-                      <span className="w-2 h-2 bg-red-500 rounded-full mr-2"></span>
+                      <span className="w-2 h-2 bg-red-500 rounded-full mr-2 animate-pulse"></span>
                       Action requise
                     </span>
                   </button>
                 </div>
                 
                 <div className="flex items-center space-x-3">
-                  <button className={`p-2 rounded-lg transition-colors ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'}`}>
+                  <button className={`p-2 rounded-lg transition-all duration-200 hover:scale-110 ${darkMode ? 'hover:bg-gray-700/50 hover:shadow-md' : 'hover:bg-gray-100 hover:shadow-sm'}`}>
                     <Share2 className="h-5 w-5 text-gray-600 dark:text-gray-300" />
                   </button>
-                  <button className={`p-2 rounded-lg transition-colors ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'}`}>
+                  <button className={`p-2 rounded-lg transition-all duration-200 hover:scale-110 ${darkMode ? 'hover:bg-gray-700/50 hover:shadow-md' : 'hover:bg-gray-100 hover:shadow-sm'}`}>
                     <Download className="h-5 w-5 text-gray-600 dark:text-gray-300" />
                   </button>
-                  <button className={`p-2 rounded-lg transition-colors ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'}`}>
+                  <button className={`relative p-2 rounded-lg transition-all duration-200 hover:scale-110 ${darkMode ? 'hover:bg-gray-700/50 hover:shadow-md' : 'hover:bg-gray-100 hover:shadow-sm'}`}>
                     <Bell className="h-5 w-5 text-gray-600 dark:text-gray-300" />
+                    <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
                   </button>
-                  <button className={`p-2 rounded-lg transition-colors ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'}`}>
+                  <button className={`p-2 rounded-lg transition-all duration-200 hover:scale-110 ${darkMode ? 'hover:bg-gray-700/50 hover:shadow-md' : 'hover:bg-gray-100 hover:shadow-sm'}`}>
                     <Settings className="h-5 w-5 text-gray-600 dark:text-gray-300" />
                   </button>
                   <ThemeToggle />
                   <Link
                     href="/portfolio"
-                    className="flex items-center px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg text-sm font-medium transition-colors"
+                    className="flex items-center px-4 py-2 bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-700 hover:to-primary-600 text-white rounded-xl text-sm font-medium transition-all duration-200 shadow-lg shadow-primary-500/30 hover:shadow-xl hover:shadow-primary-500/40 hover:scale-105"
                   >
                     <Plus className="h-4 w-4 mr-2" />
                     Compléter mon patrimoine
@@ -239,7 +247,7 @@ export default function Layout({ children }: LayoutProps) {
           </header>
           
           {/* Main Content */}
-          <main className="p-6">
+          <main className="p-6 animate-fade-in">
             {children}
           </main>
         </div>

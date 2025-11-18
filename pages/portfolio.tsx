@@ -282,7 +282,7 @@ export default function Portfolio() {
           </div>
           <button
             onClick={() => setShowAddModal(true)}
-            className="inline-flex items-center px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg text-sm font-medium transition-colors"
+            className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-700 hover:to-primary-600 text-white rounded-xl text-sm font-medium transition-all duration-200 shadow-lg shadow-primary-500/30 hover:shadow-xl hover:shadow-primary-500/40 hover:scale-105"
           >
             <Plus className="h-5 w-5 mr-2" />
             Ajouter une action
@@ -290,18 +290,18 @@ export default function Portfolio() {
         </div>
 
         {/* Graphique de performance */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+        <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-xl p-6 border border-gray-200/50 dark:border-gray-700/50 shadow-md card-hover">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Performance</h2>
-            <div className="flex space-x-1">
+            <div className="flex space-x-1 bg-gray-100/50 dark:bg-gray-700/50 p-1 rounded-lg backdrop-blur-sm">
               {(['1J', '7J', '1M', 'YTD', '1A', 'TOUT'] as const).map((range) => (
                 <button
                   key={range}
                   onClick={() => setTimeRange(range)}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
+                  className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 ${
                     timeRange === range
-                      ? 'bg-primary-600 text-white'
-                      : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                      ? 'bg-gradient-to-r from-primary-600 to-primary-500 text-white shadow-md shadow-primary-500/30'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-white/50 dark:hover:bg-gray-600/50'
                   }`}
                 >
                   {range}
@@ -354,7 +354,7 @@ export default function Portfolio() {
         {/* Grille de sections */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Diversification géographique */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+          <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-xl p-6 border border-gray-200/50 dark:border-gray-700/50 shadow-md card-hover">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white">DIVERSIFICATION</h3>
               <select className="px-3 py-1.5 text-xs border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
@@ -380,7 +380,7 @@ export default function Portfolio() {
           </div>
 
           {/* Dividendes */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+          <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-xl p-6 border border-gray-200/50 dark:border-gray-700/50 shadow-md card-hover">
             <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">DIVIDENDES</h3>
             {dividendStats && dividendStats.totalAnnualDividends > 0 ? (
               <>
@@ -421,7 +421,7 @@ export default function Portfolio() {
         </div>
 
         {/* Section Performance */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+        <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-xl p-6 border border-gray-200/50 dark:border-gray-700/50 shadow-md card-hover">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Performance</h2>
             <ChevronDown className="h-4 w-4 text-gray-400" />
@@ -430,13 +430,13 @@ export default function Portfolio() {
             Performance sur la période "{timeRange}" pour Actions & Fonds
           </p>
           <div className="flex items-center space-x-2 mb-4">
-            <span className={`text-2xl font-bold ${totalGain >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+            <span className={`text-2xl font-bold transition-colors duration-200 ${totalGain >= 0 ? 'gradient-text-success' : 'gradient-text-danger'}`}>
               {formatCurrency(totalGain)}
             </span>
-            <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+            <span className={`px-3 py-1 rounded-full text-sm font-medium shadow-sm ${
               totalGain >= 0
-                ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
-                : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
+                ? 'bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 text-green-700 dark:text-green-300'
+                : 'bg-gradient-to-r from-red-100 to-rose-100 dark:from-red-900/30 dark:to-rose-900/30 text-red-700 dark:text-red-300'
             }`}>
               {formatPercent(totalGainPercent)}
             </span>
@@ -448,7 +448,7 @@ export default function Portfolio() {
         </div>
 
         {/* Tableau des actifs */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+        <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-xl border border-gray-200/50 dark:border-gray-700/50 shadow-md card-hover">
           <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white">Actifs</h3>
@@ -549,7 +549,7 @@ export default function Portfolio() {
                 </p>
                 <button
                   onClick={() => setShowAddModal(true)}
-                  className="inline-flex items-center px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg text-sm font-medium transition-colors"
+                  className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-700 hover:to-primary-600 text-white rounded-xl text-sm font-medium transition-all duration-200 shadow-lg shadow-primary-500/30 hover:shadow-xl hover:shadow-primary-500/40 hover:scale-105"
                 >
                   <Plus className="h-5 w-5 mr-2" />
                   Ajouter une action
@@ -562,8 +562,8 @@ export default function Portfolio() {
 
       {/* Add/Edit Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full">
+        <div className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
+          <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl rounded-xl shadow-2xl max-w-md w-full border border-gray-200/50 dark:border-gray-700/50 animate-scale-in">
             <div className="flex justify-between items-center px-6 py-4 border-b border-gray-200 dark:border-gray-700">
               <h3 className="text-lg font-medium text-gray-900 dark:text-white">
                 {editingStock ? 'Modifier l\'action' : 'Ajouter une action'}

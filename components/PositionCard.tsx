@@ -80,12 +80,13 @@ export default function PositionCard({ position, onCopy }: PositionCardProps) {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl p-4 min-w-[280px] border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all">
+    <div className="group bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-xl p-4 min-w-[280px] border border-gray-200/50 dark:border-gray-700/50 card-hover shadow-md hover:shadow-xl hover:shadow-primary-500/10 dark:hover:shadow-primary-500/20">
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center space-x-3">
           {/* Logo circulaire */}
-          <div className={`${getColorForSymbol(stock.symbol)} w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-sm`}>
+          <div className={`relative ${getColorForSymbol(stock.symbol)} w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-lg transition-transform duration-200 group-hover:scale-110`}>
             {getInitials(stock.name)}
+            <div className="absolute inset-0 rounded-full bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
           </div>
           <div className="flex-1 min-w-0">
             <h3 className="font-semibold text-gray-900 dark:text-white text-sm truncate">
@@ -109,23 +110,25 @@ export default function PositionCard({ position, onCopy }: PositionCardProps) {
 
       {/* Valeur actuelle */}
       <div className="mb-3">
-        <p className="text-2xl font-bold text-gray-900 dark:text-white">
+        <p className="text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-200">
           {formatCurrency(currentValue)}
         </p>
       </div>
 
       {/* Plus-value */}
       <div className="flex items-center justify-between mb-3">
-        <div className={`flex items-center space-x-1 ${isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
-          {isPositive ? (
-            <TrendingUp className="h-4 w-4" />
-          ) : (
-            <TrendingDown className="h-4 w-4" />
-          )}
+        <div className={`flex items-center space-x-2 ${isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+          <div className={`p-1.5 rounded-lg ${isPositive ? 'bg-green-100/50 dark:bg-green-900/20' : 'bg-red-100/50 dark:bg-red-900/20'}`}>
+            {isPositive ? (
+              <TrendingUp className="h-4 w-4" />
+            ) : (
+              <TrendingDown className="h-4 w-4" />
+            )}
+          </div>
           <span className="font-semibold text-sm">
             {formatCurrency(gainLoss)}
           </span>
-          <span className={`text-xs px-2 py-0.5 rounded-full ${isPositive ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'}`}>
+          <span className={`text-xs px-2.5 py-1 rounded-full font-medium shadow-sm ${isPositive ? 'bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 text-green-700 dark:text-green-300' : 'bg-gradient-to-r from-red-100 to-rose-100 dark:from-red-900/30 dark:to-rose-900/30 text-red-700 dark:text-red-300'}`}>
             {formatPercent(gainLossPercent)}
           </span>
         </div>
